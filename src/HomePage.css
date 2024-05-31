@@ -1,0 +1,11 @@
+.read-the-docs {
+  text-align: left;
+  color: #888;
+  margin-left: 20px; /* Add left margin */
+  margin-right: 20px; /* Add right margin */
+}
+
+.read-the-docs-container {
+  text-align: center;
+  margin-top: 20px;
+}

@@ -6,7 +6,7 @@
 }
 
 .logo {
-  height: 6em;
+  height: 4em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
@@ -38,5 +38,6 @@
 }
 
 .read-the-docs {
+  text-align: left;
   color: #888;
 }
