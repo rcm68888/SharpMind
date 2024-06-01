@@ -1,5 +1,5 @@
-INSERT INTO "user" (name, email, password, acct_type) VALUES ('John Doe', 'john@example.com', 'password123', 'student');
-INSERT INTO "user" (name, email, password, acct_type) VALUES ('Jane Smith', 'jane@example.com', 'password123', 'teacher');
+INSERT INTO users (name, email, password, acct_type) VALUES ('John Doe', 'john@example.com', 'password123', 'student');
+INSERT INTO users (name, email, password, acct_type) VALUES ('Jane Smith', 'jane@example.com', 'password123', 'teacher');
 
 INSERT INTO file (user_id, file_name, file_type) VALUES (1, 'math_notes.pdf', 'pdf');
 INSERT INTO file (user_id, file_name, file_type) VALUES (1, 'history_notes.docx', 'docx');
