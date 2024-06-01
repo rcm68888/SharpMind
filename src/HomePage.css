@@ -1,11 +1,39 @@
-.read-the-docs {
-  text-align: left;
-  color: #888;
-  margin-left: 20px; /* Add left margin */
-  margin-right: 20px; /* Add right margin */
-}
-
 .read-the-docs-container {
   text-align: center;
   margin-top: 20px;
+  padding: 20px;
+  background-color: #6594E0; /* Background color */
+  color: white; /* Text color */
+  border-radius: 10px; /* Optional: Rounded corners */
+}
+
+.read-the-docs {
+  text-align: left;
+  color: inherit; /* Inherit text color from parent */
+  margin-left: 20px; /* Left margin */
+  margin-right: 20px; /* Right margin */
+}
+
+.learn-more-content, .try-for-free-content {
+  color: black; /* Text color */
+  background-color: white; /* Background color for new content */
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.learn-more-item {
+  text-align: left;
+}
+
+.learn-more-item h2, .try-for-free-content h2 {
+  font-size: 1.5em;
+}
+
+.learn-more-item p, .try-for-free-content p {
+  font-size: 1em;
+  line-height: 1.5;
+}
+
+.try-for-free-content {
+  text-align: left;
 }
