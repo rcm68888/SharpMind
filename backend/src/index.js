@@ -21,7 +21,12 @@ const pool = new Pool({
 });
 
 // Routes
-app.post('/signup', async (req, res) => {
+app.get('/', async (req, res) => {
+
+  res.status(200).send({ message: 'Welcome to SharpMindAI', date: new Date() })
+});
+
+app.post('/api/signup', async (req, res) => {
   const { name, email, password, acct_type } = req.body;
 
   try {
@@ -31,6 +36,20 @@ app.post('/signup', async (req, res) => {
     );
 
     res.json(newUser.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+app.get('/api/users', async (req, res) => {
+  
+  try {
+    const users = await pool.query(
+      'SELECT * FROM users'
+    );
+
+    res.json(users.rows);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
