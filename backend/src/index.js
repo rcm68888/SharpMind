@@ -5,7 +5,7 @@ import pkg from 'pg';
 
 const { Pool } = pkg;
 const app = express();
-const PORT = 5000;
+const PORT = 5001;
 
 // Middleware
 app.use(cors());
