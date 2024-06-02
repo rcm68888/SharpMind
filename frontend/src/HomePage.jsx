@@ -4,7 +4,7 @@ import './HomePage.css';
 import logo from './assets/logo.png';
 
 const HomePage = () => {
-  const history = useNavigate();
+  const navigate = useNavigate();
   const [content, setContent] = useState('default');
 
   const buttonStyle = {
@@ -48,7 +48,7 @@ const HomePage = () => {
         <h1>Welcome to SharpMind AI</h1>
       </div>
       <div style={{ textAlign: 'center', marginTop: '20px' }}>
-        <button style={buttonStyle} onClick={() => history.push('/signup')}>Sign Up</button>
+        <button style={buttonStyle} onClick={() => navigate('/signup')}>Sign Up</button>
         <button style={buttonStyle} onClick={() => alert('Login functionality coming soon!')}>Login</button>
       </div>
       <div className="read-the-docs-container">
@@ -94,7 +94,7 @@ const HomePage = () => {
           </>
         )}
         <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <button style={buttonStyle} onClick={() => alert('Get Started functionality coming soon!')}>Get Started</button>
+          <button style={buttonStyle} onClick={() => navigate('/create-quiz/1')}>Get Started</button>
           <button style={buttonStyle} onClick={handleLearnMoreClick}>Learn More</button>
         </div>
       </div>
@@ -103,3 +103,4 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
