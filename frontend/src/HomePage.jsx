@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './HomePage.css';
+import './styles/HomePage.css';
 import logo from './assets/logo.png';
 
 const HomePage = () => {
@@ -54,9 +54,9 @@ const HomePage = () => {
       <div className="read-the-docs-container">
         {content === 'default' && (
           <p className="read-the-docs">
-            SharpMindAI is an innovative educational application designed to enhance learning and comprehension through interactive quizzes generated from user-uploaded documents. Users can upload various file types—text documents, PDFs, video, power point and slides presentations.<br />
-            Say goodbye to the traditional methods of self-testing that are not only time-consuming but often require the creation of custom quizzes or flashcards.<br />
-            SharpMindAI aims to solve this problem by automating the quiz creation process, allowing users to focus on learning and understanding rather than on the mechanics of creating study aids.<br />
+            SharpMindAI is an innovative educational application designed to enhance learning and comprehension through interactive quizzes generated from user-uploaded documents. Users can upload various file types—text documents, PDFs, video, powerpoint and slides presentations.<br /> <br />
+            Say goodbye to the traditional methods of self-testing that are not only time-consuming but often require the creation of custom quizzes or flashcards.<br /> <br />
+            SharpMindAI aims to solve this problem by automating the quiz creation process, allowing users to focus on learning and understanding rather than on the mechanics of creating study aids.<br /> <br />
             SharpMindAI aims to provide a seamless and efficient learning experience, enabling users to deepen their understanding of study materials through interactive and automatically generated quizzes.
           </p>
         )}
@@ -66,7 +66,7 @@ const HomePage = () => {
               <div className="learn-more-item">
                 <h2>Easily Generate Quizzes from Various File Types with SharpMindAI</h2>
                 <p>
-                  With SharpMindAI, users can effortlessly upload different file types, such as text documents, PDFs, videos, power point presentations, and slides, and the app will automatically generate quiz-style questionnaires based on the content of these files. This innovative feature saves time and eliminates the need for manual quiz creation, allowing users to focus on learning and comprehension.
+                  With SharpMindAI, users can effortlessly upload different file types, such as text documents, PDFs, videos, powerpoint and slides presentations and the app will automatically generate quiz-style questionnaires based on the content of these files. This innovative feature saves time and eliminates the need for manual quiz creation, allowing users to focus on learning and comprehension.
                 </p>
               </div>
               <div className="learn-more-item">
@@ -94,8 +94,12 @@ const HomePage = () => {
           </>
         )}
         <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <button style={buttonStyle} onClick={() => navigate('/create-quiz/1')}>Get Started</button>
-          <button style={buttonStyle} onClick={handleLearnMoreClick}>Learn More</button>
+          {content === 'default' && (
+            <>
+              <button style={buttonStyle} onClick={() => alert('Get Started functionality coming soon!')}>Get Started</button>
+              <button style={buttonStyle} onClick={handleLearnMoreClick}>Learn More</button>
+            </>
+          )}
         </div>
       </div>
     </div>

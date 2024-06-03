@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -20,8 +22,13 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/signup', formData);
+      const response = await axios.post('http://localhost:5001/api/signup', formData);
       console.log(response.data);
+
+      if (response.status === 200) {
+        navigate('/');  // Redirect to HomePage path
+      }
+
       alert('Sign up successful!');
     } catch (error) {
       console.error(error);
