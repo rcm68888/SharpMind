@@ -9,6 +9,7 @@ const App = () => {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
+      <Route path="/load-reviewer" element={<HomePage content="loadReviewer" />} />  {/* Pre-set content */}
       <Route path="/signup" element={<SignUp />} />
       {/* <Route path="/create-quiz" element={<QuizPage />} /> */}
       <Route path="/create-quiz/:fileId" element={<QuizPage />} />

@@ -1,6 +1,25 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import logo from '../assets/logo.png';
 import axios from 'axios';
+
+const logoStyle = {
+  width: '110px',
+  height: '110px',
+  marginBottom: '10px',
+  marginRight: '20px'
+};
+
+const buttonStyle = {
+  padding: '10px 20px',
+  fontSize: '16px',
+  cursor: 'pointer',
+  border: 'none',
+  borderRadius: '5px',
+  backgroundColor: '#007BFF',
+  color: '#FFF',
+  margin: '10px'
+};
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -38,7 +57,8 @@ const SignUp = () => {
 
   return (
     <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      <h1>Sign Up</h1>
+      <img src={logo} alt="Logo" style={logoStyle} />
+      <h1>SharpMind AI User Registration</h1>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Name:</label>
@@ -56,7 +76,7 @@ const SignUp = () => {
           <label>Account Type:</label>
           <input type="text" name="acct_type" value={formData.acct_type} onChange={handleChange} required />
         </div>
-        <button type="submit">Sign Up</button>
+        <button style={buttonStyle} type="submit">Sign Up</button>
       </form>
     </div>
   );

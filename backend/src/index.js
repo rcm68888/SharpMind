@@ -109,9 +109,6 @@ app.get('/api/quiz/:fileId', async (req, res) => {
   }
 });
 
-
-
-
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

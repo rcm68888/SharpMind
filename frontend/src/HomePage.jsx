@@ -1,11 +1,106 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './styles/HomePage.css';
 import logo from './assets/logo.png';
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [content, setContent] = useState('default');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userData, setUserData] = useState(null); // Store logged-in user data
+  const [showSignUpButton, setShowSignUpButton] = useState(true);
+  const [isLoginFormVisible, setIsLoginFormVisible] = useState(true);
+  const [showLoginForm, setShowLoginForm] = useState(false);
+  const [isUploadButtonClicked, setIsUploadButtonClicked] = useState(false);
+
+  useEffect(() => {
+    localStorage.removeItem('loggedInUser');  // Remove stored user data on mount
+    const storedUser = localStorage.getItem('loggedInUser'); // Check for remaining data (optional)
+    if (storedUser) {
+      setUserData(JSON.parse(storedUser));
+      setIsLoggedIn(true); // Update state if data still exists (optional)
+    }
+  }, []); // Empty dependency array to run only once on component mount
+
+  const handleLogout = () => {
+    localStorage.removeItem('loggedInUser');
+    setUserData(null); // Clear user data in state
+    setIsLoggedIn(false); // Update login state
+  };
+
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.get('http://localhost:5001/api/users', {
+        email,
+        password,
+      });
+      const userData = response.data;
+      if (userData) {
+        localStorage.setItem('loggedInUser', JSON.stringify(userData));
+        setUserData(userData); // Update state with user data
+        setIsLoggedIn(true);
+        setContent('loadReviewer'); // Set content to "loadReviewer" after successful login
+        navigate('/load-reviewer'); // Optional: Navigate to a dedicated "/load-reviewer" route
+      } else {
+        setErrorMessage('Wrong email address or password!');
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage('An error occurred during login. Please try again.');
+    }
+  };
+
+  const handleUploadButtonClick = () => {
+    setIsUploadButtonClicked(true);
+  };
+
+  const handleReviewerLinkSubmit = (e) => {
+    e.preventDefault();
+    const reviewerLink = e.target.reviewerLink.value;
+  };
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const handleShowLoginForm = () => {
+    setShowLoginForm(true); // Toggle login form visibility
+    setShowSignUpButton(false); // Hide Sign Up button on login form open
+  };
+
+  const LoginForm = () => (  // Separate LoginForm component
+    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+      <form onSubmit={handleLoginSubmit}>
+        <label htmlFor="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          value={email}
+          onChange={handleEmailChange}
+          required
+        />
+        <label htmlFor="password">Password:</label>
+        <input
+          type="password"
+          id="password"
+          value={password}
+          onChange={handlePasswordChange}
+          required
+        />
+        <button style={buttonStyle} type="submit">Submit</button>
+        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+      </form>
+    </div>
+  );
 
   const buttonStyle = {
     padding: '10px 20px',
@@ -38,7 +133,7 @@ const HomePage = () => {
   };
 
   const handleTryForFreeClick = () => {
-    setContent('tryForFree');
+    setContent('loadReviewer');
   };
 
   return (
@@ -47,10 +142,18 @@ const HomePage = () => {
         <img src={logo} alt="Logo" style={logoStyle} />
         <h1>Welcome to SharpMind AI</h1>
       </div>
-      <div style={{ textAlign: 'center', marginTop: '20px' }}>
-        <button style={buttonStyle} onClick={() => navigate('/signup')}>Sign Up</button>
-        <button style={buttonStyle} onClick={() => alert('Login functionality coming soon!')}>Login</button>
-      </div>
+
+      {!isLoggedIn && (
+        <>
+          {showSignUpButton && (  // Conditionally render Sign Up button
+            <button style={buttonStyle} onClick={() => navigate('/signup')}>Sign Up</button>
+          )}
+          {!showLoginForm && (  // Render Login button only if form not shown
+            <button style={buttonStyle} onClick={handleShowLoginForm}>Login</button>
+          )}
+          {showLoginForm && <LoginForm />}  {/* Render LoginForm conditionally */}
+        </>
+      )}
       <div className="read-the-docs-container">
         {content === 'default' && (
           <p className="read-the-docs">
@@ -79,7 +182,7 @@ const HomePage = () => {
             <button style={buttonStyle} onClick={handleTryForFreeClick}>Try for Free</button>
           </>
         )}
-        {content === 'tryForFree' && (
+        {content === 'loadReviewer' && (
           <>
             <div className="try-for-free-content">
               <h2>How to Use SharpMindAI: A Step-by-Step Guide</h2>
@@ -89,14 +192,24 @@ const HomePage = () => {
                 2. SharpMindAI will automatically generate quiz-style questionnaires based on your uploaded content.<br />
                 3. Take the quizzes to test your understanding and comprehension.
               </p>
-              <button style={buttonStyle} onClick={() => alert('Upload functionality coming soon!')}>Upload your PDF or YouTube Link</button>
+              <button style={buttonStyle} onClick={handleUploadButtonClick}>
+                Upload your PDF or YouTube Link
+              </button>
+              {/* Reviewer link input and submit button (conditionally displayed) */}
+              {isUploadButtonClicked && (
+                <form onSubmit={handleReviewerLinkSubmit}>
+                  <label htmlFor="reviewerLink">Enter Reviewer Link:</label>
+                  <input type="text" id="reviewerLink" name="reviewerLink" required />
+                  <button style={buttonStyle} onClick={() => navigate('/create-quiz/1')}>Submit</button>
+                </form>
+              )}
             </div>
           </>
         )}
         <div style={{ textAlign: 'center', marginTop: '20px' }}>
           {content === 'default' && (
             <>
-              <button style={buttonStyle} onClick={() => alert('Get Started functionality coming soon!')}>Get Started</button>
+              <button style={buttonStyle} onClick={() => navigate('/create-quiz/1')}>Get Started</button>
               <button style={buttonStyle} onClick={handleLearnMoreClick}>Learn More</button>
             </>
           )}
@@ -107,4 +220,3 @@ const HomePage = () => {
 };
 
 export default HomePage;
-
