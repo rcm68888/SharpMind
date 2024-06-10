@@ -3,6 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './styles/HomePage.css';
 import logo from './assets/logo.png';
+import { saveAs } from 'file-saver';
+import {
+  extractTextFromYoutube,
+  extractTextFromGDoc,
+  generateQuizWithChatGPT,
+  getGoogleDocId
+} from './utils';
+import dotenv from 'dotenv';
+import { OpenAI } from 'openai';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -16,6 +25,7 @@ const HomePage = () => {
   const [isLoginFormVisible, setIsLoginFormVisible] = useState(true);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [isUploadButtonClicked, setIsUploadButtonClicked] = useState(false);
+  const [quiz, setQuiz] = useState(null); // State to store generated quiz
 
   useEffect(() => {
     localStorage.removeItem('loggedInUser');  // Remove stored user data on mount
@@ -59,9 +69,50 @@ const HomePage = () => {
     setIsUploadButtonClicked(true);
   };
 
-  const handleReviewerLinkSubmit = (e) => {
+  const isURL = (str) => {
+    try {
+      new URL(str);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+
+  const handleReviewerLinkSubmit = async (e) => {
     e.preventDefault();
-    const reviewerLink = e.target.reviewerLink.value;
+    const reviewerLink = e.target.reviewerLink.value.trim();
+    let text;
+
+    if (isURL(reviewerLink)) {
+      if (reviewerLink.includes('youtube.com')) {
+        text = await extractTextFromYoutube(reviewerLink);
+      } else if (reviewerLink.includes('docs.google.com')) {
+        const fileId = getGoogleDocId(reviewerLink);
+        const accessToken = process.env.OPENAI_API_KEY;
+        text = await extractTextFromGDoc(fileId, accessToken);
+      }
+    } else {
+      text = reviewerLink;
+    }
+
+    if (text) {
+      try {
+        const response = await axios.post('http://localhost:5001/api/generate-quiz', { text });
+        const quizData = response.data.quiz;
+        setQuiz(quizData);
+
+        const blob = new Blob([quizData], { type: 'text/plain;charset=utf-8' });
+        saveAs(blob, 'generated_quiz.txt');
+        
+        // Save quiz on the backend
+        await axios.post('http://localhost:5001/api/save-quiz', { quiz: quizData });
+
+      } catch (error) {
+        console.error('Error generating quiz:', error);
+      }
+    } else {
+      alert('Please enter a valid URL or text.');
+    }
   };
 
   const handleEmailChange = (e) => {
@@ -175,36 +226,54 @@ const HomePage = () => {
               <div className="learn-more-item">
                 <h2>Enhance Learning and Comprehension with Interactive Quizzes</h2>
                 <p>
-                  SharpMindAI generates quiz-style questionnaires from user-uploaded documents, helping users assess their comprehension and enhance learning. By automating the quiz creation process, users can focus on understanding the material rather than creating study aids.
+                  SharpMindAI generates quiz-style questionnaires from user-uploaded documents, helping users enhance their learning and comprehension of the material. By actively engaging with the content through quizzes, users can reinforce their understanding and retain information more effectively.
+                </p>
+              </div>
+              <div className="learn-more-item">
+                <h2>Say Goodbye to Time-Consuming Custom Quiz Creation</h2>
+                <p>
+                  Say goodbye to the traditional methods of self-testing that require the creation of custom quizzes or flashcards. SharpMindAI automates the quiz creation process, eliminating the time-consuming task of manually crafting quizzes. Users can now focus on studying and mastering the content rather than on the mechanics of quiz creation.
+                </p>
+              </div>
+              <div className="learn-more-item">
+                <h2>Experience a Seamless and Efficient Learning Journey</h2>
+                <p>
+                  SharpMindAI aims to provide a seamless and efficient learning experience for users. By automating the quiz creation process, users can deepen their understanding of study materials through interactive and automatically generated quizzes. This intuitive approach enhances learning outcomes and makes the educational journey more enjoyable and productive.
                 </p>
               </div>
             </div>
-            <button style={buttonStyle} onClick={handleTryForFreeClick}>Try for Free</button>
+            <div style={{ textAlign: 'center' }}>
+              <button style={buttonStyle} onClick={handleTryForFreeClick}>Try for Free</button>
+            </div>
           </>
         )}
         {content === 'loadReviewer' && (
-          <>
+          <div>
+            {/* Instructions and Upload Button */}
             <div className="try-for-free-content">
               <h2>How to Use SharpMindAI: A Step-by-Step Guide</h2>
               <p>
-                Using SharpMindAI is simple and intuitive. Follow these steps to make the most of our platform:<br />
-                1. Upload your study materials, including text documents, PDFs, videos, and presentations.<br />
+                Using SharpMindAI is simple and intuitive. Follow these steps to make the most of our platform:
+                <br />
+                1. Upload your study materials, including text documents, videos, and presentations.<br />
                 2. SharpMindAI will automatically generate quiz-style questionnaires based on your uploaded content.<br />
-                3. Take the quizzes to test your understanding and comprehension.
+                3. Take the quizzes to test your understanding and comprehension.<br />
+                4. Review your test results so you'll know where to concentrate to improve your score and eventualy master the topic based on the resources you're using.
               </p>
               <button style={buttonStyle} onClick={handleUploadButtonClick}>
-                Upload your PDF or YouTube Link
+                Click to start your learning journey!!!
               </button>
-              {/* Reviewer link input and submit button (conditionally displayed) */}
-              {isUploadButtonClicked && (
-                <form onSubmit={handleReviewerLinkSubmit}>
-                  <label htmlFor="reviewerLink">Enter Reviewer Link:</label>
-                  <input type="text" id="reviewerLink" name="reviewerLink" required />
-                  <button style={buttonStyle} onClick={() => navigate('/create-quiz/1')}>Submit</button>
-                </form>
-              )}
             </div>
-          </>
+
+            {/* Reviewer Link Input (conditionally displayed) */}
+            {isUploadButtonClicked && (
+              <form onSubmit={handleReviewerLinkSubmit}>
+                <label htmlFor="reviewerLink">Enter Reviewer Text or Link:</label>
+                <input type="text" id="reviewerLink" name="reviewerLink" required />
+                <button style={buttonStyle} type="submit">Generate Quiz</button>
+              </form>
+            )}
+          </div>
         )}
         <div style={{ textAlign: 'center', marginTop: '20px' }}>
           {content === 'default' && (
@@ -214,6 +283,12 @@ const HomePage = () => {
             </>
           )}
         </div>
+        {quiz && (
+          <div>
+            <h2>Generated Quiz:</h2>
+            <pre>{quiz}</pre>
+          </div>
+        )}
       </div>
     </div>
   );
