@@ -7,7 +7,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import { OpenAI } from 'openai';
+import openAI from 'openai';
+
 
 dotenv.config();
 const { Pool } = pkg;
@@ -17,6 +18,10 @@ const PORT = 5001;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+// Get the directory name of the current module file
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 let publicQuizzes = [];
 
@@ -28,18 +33,6 @@ const pool = new Pool({
   password: 'labber',
   port: 5432,
 });
-
-// Get the directory name of the current module file
-//const currentDir = dirname(new URL(import.meta.url).pathname);
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Read the prompt from a .prompt file
-const promptFilePath = path.join(__dirname, '.prompt');
-const prompt = fs.readFileSync(promptFilePath, 'utf-8');
-
-// Configure OpenAI API client
-const openaiClient = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
 
 // Routes
 app.get('/', async (req, res) => {
@@ -179,33 +172,74 @@ app.post('/api/extract-gdoc', async (req, res) => {
   }
 });
 
-app.post('/api/generate-quiz', async (req, res) => {
-  const { text } = req.body;
+app.get('/api/public-quiz', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * from quiz where privacy=$1 LIMIT 10', ['public']);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
 
+app.get('/api/quizes', async (req, res) => {
+  const privacy = req.query.privacy
+  try {
+    const result = await pool.query('SELECT * from quiz where privacy=$1 LIMIT 10', [privacy]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+app.post('/api/generate-quiz', async (req, res) => {
   // Read the prompt from a .prompt file
   const promptFilePath = path.join(__dirname, '.prompt');
+  const prompt = fs.readFileSync(promptFilePath, 'utf-8');
+  const { text } = req.body;
+  const openai = new openAI({ apiKey: process.env.OPENAI_API_KEY,});
   try {
     const prompt = fs.readFileSync(promptFilePath, 'utf-8');
-    
-    // Append the provided text to the prompt
-    const completePrompt = `${prompt}\n\n${text}`;
+    const messages = [
+      { role: 'system', content: prompt },
+      { role: 'user', content: text }
+    ];
+    //console.log(messages);
 
-    //const response = await openaiClient.createCompletion({
-    const response = await openaiClient.chat.completions.create({     
-      model: 'gpt-3.5-turbo-instruct',
-      prompt: completePrompt,
-      max_tokens: 300,
+    const response = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: messages,
+      max_tokens: 800,
       n: 1,
       stop: null,
       temperature: 0.7,
     });
-
-    const quiz = response.data.choices[0].text.trim();
-    res.json(quiz);
+    const quiz = response.choices[0].message.content;
+    res.json({ quiz });
   } catch (error) {
-    console.error('Error generating quiz with ChatGPT:', error);
+    console.error('Error generating quiz with ChatGPT:', error.message);
     res.status(500).send('Error generating quiz');
   }
+});
+
+app.post('/api/save-quiz', (req, res) => {
+  const { quiz } = req.body;
+
+  const uploadsDir = path.join(__dirname, 'uploads');
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir);
+  }
+
+  const filePath = path.join(uploadsDir, 'generated_quiz.txt');
+  fs.writeFile(filePath, quiz, (err) => {
+    if (err) {
+      console.error('Error saving quiz:', err);
+      res.status(500).send('Error saving quiz');
+    } else {
+      res.status(200).send('Quiz saved successfully');
+    }
+  });
 });
 
 app.get('/api/quiz/:id', (req, res) => {
@@ -215,16 +249,6 @@ app.get('/api/quiz/:id', (req, res) => {
     res.json(quiz);
   } else {
     res.status(404).json({ error: 'Quiz not found' });
-  }
-});
-
-app.get('/api/public-quiz', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * from quiz where privacy=$1 LIMIT 10', ['public']);
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
   }
 });
 

@@ -4,6 +4,7 @@ import axios from 'axios';
 import './styles/HomePage.css';
 import logo from './assets/logo.png';
 import { saveAs } from 'file-saver';
+import isURL from 'validator/lib/isURL';
 import {
   extractTextFromYoutube,
   extractTextFromGDoc,
@@ -25,7 +26,9 @@ const HomePage = () => {
   const [isLoginFormVisible, setIsLoginFormVisible] = useState(true);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [isUploadButtonClicked, setIsUploadButtonClicked] = useState(false);
+  const [reviewerLink, setReviewerLink] = useState('');
   const [quiz, setQuiz] = useState(null); // State to store generated quiz
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     localStorage.removeItem('loggedInUser');  // Remove stored user data on mount
@@ -78,8 +81,14 @@ const HomePage = () => {
     }
   };
 
+  const handleReviewerLinkChange = (e) => {
+    setReviewerLink(e.target.value);
+  };
+
   const handleReviewerLinkSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
+    setQuiz('');
     const reviewerLink = e.target.reviewerLink.value.trim();
     let text;
 
@@ -109,6 +118,7 @@ const HomePage = () => {
 
       } catch (error) {
         console.error('Error generating quiz:', error);
+        setError('Error generating quiz.');
       }
     } else {
       alert('Please enter a valid URL or text.');
@@ -269,7 +279,8 @@ const HomePage = () => {
             {isUploadButtonClicked && (
               <form onSubmit={handleReviewerLinkSubmit}>
                 <label htmlFor="reviewerLink">Enter Reviewer Text or Link:</label>
-                <input type="text" id="reviewerLink" name="reviewerLink" required />
+                {/* <input type="text" id="reviewerLink" name="reviewerLink" value={reviewerLink} onChange={handleReviewerLinkChange} required /> */}
+                <textarea rows="8" id="reviewerLink" name="reviewerLink" value={reviewerLink} onChange={handleReviewerLinkChange} required></textarea>
                 <button style={buttonStyle} type="submit">Generate Quiz</button>
               </form>
             )}
@@ -283,12 +294,6 @@ const HomePage = () => {
             </>
           )}
         </div>
-        {quiz && (
-          <div>
-            <h2>Generated Quiz:</h2>
-            <pre>{quiz}</pre>
-          </div>
-        )}
       </div>
     </div>
   );

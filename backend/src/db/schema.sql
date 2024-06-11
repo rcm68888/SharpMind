@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS users, file, quiz, question, result CASCADE;
+
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
@@ -18,9 +20,12 @@ CREATE TABLE file (
 CREATE TABLE quiz (
   id SERIAL PRIMARY KEY,
   file_id INT NOT NULL,
+  user_id INT NOT NULL,
   quiz_title VARCHAR(255) NOT NULL,
+  privacy VARCHAR(15) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (file_id) REFERENCES file(id) ON DELETE CASCADE
+  FOREIGN KEY (file_id) REFERENCES file(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE question (

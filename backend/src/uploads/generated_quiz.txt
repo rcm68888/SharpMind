@@ -1,0 +1,3 @@
+INSERT INTO question (question_text, o1, o2, o3, o4, cor_option) VALUES ("What are the two main ways to create variables in JavaScript?", "var and let", "var and const", "let and const", "var, let, and const", "var and let");
+INSERT INTO question (question_text, o1, o2, o3, o4, cor_option) VALUES ("Which keyword declares a block scope local variable in JavaScript?", "var", "const", "let", "const and let", "let");
+INSERT INTO question (question_text, o1, o2, o3, o4, cor_option) VALUES ("Which function joins two strings in JavaScript?", "length()", "indexOf()", "concat()", "slice()", "concat()");

@@ -6,10 +6,10 @@ INSERT INTO file (user_id, file_name, file_type) VALUES (1, 'history_notes.docx'
 INSERT INTO file (user_id, file_name, file_type) VALUES (2, 'science_notes.pdf', 'pdf');
 INSERT INTO file (user_id, file_name, file_type) VALUES (2, 'geography_notes.pptx', 'pptx');
 
-INSERT INTO quiz (file_id, quiz_title) VALUES (1, 'Math Quiz');
-INSERT INTO quiz (file_id, quiz_title) VALUES (2, 'History Quiz');
-INSERT INTO quiz (file_id, quiz_title) VALUES (3, 'Science Quiz');
-INSERT INTO quiz (file_id, quiz_title) VALUES (4, 'Geography Quiz');
+INSERT INTO quiz (file_id, user_id, quiz_title, privacy) VALUES (1, 1, 'Math Quiz', 'public');
+INSERT INTO quiz (file_id, user_id, quiz_title, privacy) VALUES (2, 1, 'History Quiz', 'public');
+INSERT INTO quiz (file_id, user_id, quiz_title, privacy) VALUES (3, 2, 'Science Quiz', 'public');
+INSERT INTO quiz (file_id, user_id, quiz_title, privacy) VALUES (4, 2, 'Geography Quiz', 'public');
 
 INSERT INTO question (quiz_id, question_text, options, correct_option)
 VALUES (1, 'What is 2+2?', '["1", "2", "3", "4"]', 'D');
