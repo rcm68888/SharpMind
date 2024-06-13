@@ -9,7 +9,6 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import openAI from 'openai';
 
-
 dotenv.config();
 const { Pool } = pkg;
 const app = express();
@@ -33,6 +32,23 @@ const pool = new Pool({
   password: 'labber',
   port: 5432,
 });
+
+// Function to save data to a file
+const saveToFile = (dir, fileName, data, res) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
+
+  const filePath = path.join(dir, fileName);
+  fs.writeFile(filePath, data, (err) => {
+    if (err) {
+      console.error(`Error saving to ${filePath}:`, err);
+      res.status(500).send(`Error saving ${fileName}`);
+    } else {
+      res.status(200).send(`${fileName} saved successfully`);
+    }
+  });
+};
 
 // Routes
 app.get('/', async (req, res) => {
@@ -210,7 +226,7 @@ app.post('/api/generate-quiz', async (req, res) => {
     const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: messages,
-      max_tokens: 800,
+      max_tokens: 1500,
       n: 1,
       stop: null,
       temperature: 0.7,
@@ -223,23 +239,54 @@ app.post('/api/generate-quiz', async (req, res) => {
   }
 });
 
+app.post('/api/generate-quiz_title', async (req, res) => {
+  // Read the prompt from a .prompt file
+  const promptFilePath1 = path.join(__dirname, '.prompt1');
+  const prompt1 = fs.readFileSync(promptFilePath1, 'utf-8');
+  const { text } = req.body;
+  const openai1 = new openAI({ apiKey: process.env.OPENAI_API_KEY,});
+  try {
+    const prompt1 = fs.readFileSync(promptFilePath1, 'utf-8');
+    const messages = [
+      { role: 'system', content: prompt1 },
+      { role: 'user', content: text }
+    ];
+    //console.log(messages);
+
+    const response1 = await openai1.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: messages,
+      max_tokens: 1500,
+      n: 1,
+      stop: null,
+      temperature: 0.7,
+    });
+    const quiz_title = response1.choices[0].message.content;
+    res.json({ quiz_title });
+  } catch (error) {
+    console.error('Error generating quiz title with ChatGPT:', error.message);
+    res.status(500).send('Error generating quiz title');
+  }
+});
+
 app.post('/api/save-quiz', (req, res) => {
   const { quiz } = req.body;
 
-  const uploadsDir = path.join(__dirname, 'uploads');
-  if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir);
+  if (!quiz) {
+    return res.status(400).send('Quiz content is missing');
   }
 
-  const filePath = path.join(uploadsDir, 'generated_quiz.txt');
-  fs.writeFile(filePath, quiz, (err) => {
-    if (err) {
-      console.error('Error saving quiz:', err);
-      res.status(500).send('Error saving quiz');
-    } else {
-      res.status(200).send('Quiz saved successfully');
-    }
-  });
+  const uploadsDir = path.join(__dirname, 'uploads');
+  saveToFile(uploadsDir, 'generated_quiz.txt', quiz, res);
+});
+
+app.post('/api/save-quiz_title', (req, res) => {
+  const { quiz_title  } = req.body;
+  if (!quiz_title) {
+    return res.status(400).send('Quiz title is missing');
+  }
+  const uploadsDir = path.join(__dirname, 'uploads');
+  saveToFile(uploadsDir, 'generated_quiz_title.txt', quiz_title, res);
 });
 
 app.get('/api/quiz/:id', (req, res) => {

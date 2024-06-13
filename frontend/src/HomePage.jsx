@@ -11,7 +11,6 @@ import {
   generateQuizWithChatGPT,
   getGoogleDocId
 } from './utils';
-import dotenv from 'dotenv';
 import { OpenAI } from 'openai';
 
 const HomePage = () => {
@@ -28,6 +27,7 @@ const HomePage = () => {
   const [isUploadButtonClicked, setIsUploadButtonClicked] = useState(false);
   const [reviewerLink, setReviewerLink] = useState('');
   const [quiz, setQuiz] = useState(null); // State to store generated quiz
+  const [quizTitle, setQuizTitle] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -55,10 +55,8 @@ const HomePage = () => {
       const userData = response.data;
       if (userData) {
         localStorage.setItem('loggedInUser', JSON.stringify(userData));
-        setUserData(userData); // Update state with user data
         setIsLoggedIn(true);
-        setContent('loadReviewer'); // Set content to "loadReviewer" after successful login
-        navigate('/load-reviewer'); // Optional: Navigate to a dedicated "/load-reviewer" route
+        navigate('/load-reviewer');
       } else {
         setErrorMessage('Wrong email address or password!');
       }
@@ -89,9 +87,9 @@ const HomePage = () => {
     e.preventDefault();
     setError(null);
     setQuiz('');
+    setQuizTitle('');
     const reviewerLink = e.target.reviewerLink.value.trim();
     let text;
-
     if (isURL(reviewerLink)) {
       if (reviewerLink.includes('youtube.com')) {
         text = await extractTextFromYoutube(reviewerLink);
@@ -103,7 +101,6 @@ const HomePage = () => {
     } else {
       text = reviewerLink;
     }
-
     if (text) {
       try {
         const response = await axios.post('http://localhost:5001/api/generate-quiz', { text });
@@ -112,9 +109,20 @@ const HomePage = () => {
 
         const blob = new Blob([quizData], { type: 'text/plain;charset=utf-8' });
         saveAs(blob, 'generated_quiz.txt');
+
+        const response1 = await axios.post('http://localhost:5001/api/generate-quiz_title', { text });
+        const quizTitleData = response1.data.quiz_title;
+        setQuizTitle(quizTitleData);
+
+        const blob1 = new Blob([quizTitleData], { type: 'text/plain;charset=utf-8' });
+        saveAs(blob1, 'generated_quiz_title.txt');
         
         // Save quiz on the backend
         await axios.post('http://localhost:5001/api/save-quiz', { quiz: quizData });
+        await axios.post('http://localhost:5001/api/save-quiz_title', { quiz_title: quizTitleData });
+
+        // Navigate to QuizList page after saving the quiz
+        navigate('/quiz-list');
 
       } catch (error) {
         console.error('Error generating quiz:', error);
@@ -137,9 +145,9 @@ const HomePage = () => {
     setShowLoginForm(true); // Toggle login form visibility
     setShowSignUpButton(false); // Hide Sign Up button on login form open
   };
-
+  
   const LoginForm = () => (  // Separate LoginForm component
-    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+    <div className="login-form">
       <form onSubmit={handleLoginSubmit}>
         <label htmlFor="email">Email:</label>
         <input
@@ -157,37 +165,11 @@ const HomePage = () => {
           onChange={handlePasswordChange}
           required
         />
-        <button style={buttonStyle} type="submit">Submit</button>
-        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+        <button className="button-stylehp" type="submit">Submit</button>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
       </form>
     </div>
   );
-
-  const buttonStyle = {
-    padding: '10px 20px',
-    fontSize: '16px',
-    cursor: 'pointer',
-    border: 'none',
-    borderRadius: '5px',
-    backgroundColor: '#007BFF',
-    color: '#FFF',
-    margin: '10px'
-  };
-
-  const containerStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: '50px',
-    textAlign: 'center'
-  };
-
-  const logoStyle = {
-    width: '110px',
-    height: '110px',
-    marginBottom: '10px',
-    marginRight: '20px'
-  };
 
   const handleLearnMoreClick = () => {
     setContent('learnMore');
@@ -198,26 +180,24 @@ const HomePage = () => {
   };
 
   return (
-    <div>
-      <div style={containerStyle}>
-        <img src={logo} alt="Logo" style={logoStyle} />
+    <div className="homepage">
+      <div className="header">
+        <img src={logo} alt="Logo" className="logo" />
         <h1>Welcome to SharpMind AI</h1>
       </div>
 
       {!isLoggedIn && (
         <>
-          {showSignUpButton && (  // Conditionally render Sign Up button
-            <button style={buttonStyle} onClick={() => navigate('/signup')}>Sign Up</button>
+          <button className="button-stylehp" onClick={() => navigate('/signup')}>Sign Up</button>
+          {!showLoginForm && (
+            <button className="button-stylehp" onClick={handleShowLoginForm}>Login</button>
           )}
-          {!showLoginForm && (  // Render Login button only if form not shown
-            <button style={buttonStyle} onClick={handleShowLoginForm}>Login</button>
-          )}
-          {showLoginForm && <LoginForm />}  {/* Render LoginForm conditionally */}
+          {showLoginForm && <LoginForm />}
         </>
       )}
-      <div className="read-the-docs-container">
+      <div className="content-container">
         {content === 'default' && (
-          <p className="read-the-docs">
+          <p className="description">
             SharpMindAI is an innovative educational application designed to enhance learning and comprehension through interactive quizzes generated from user-uploaded documents. Users can upload various file types—text documents, PDFs, video, powerpoint and slides presentations.<br /> <br />
             Say goodbye to the traditional methods of self-testing that are not only time-consuming but often require the creation of custom quizzes or flashcards.<br /> <br />
             SharpMindAI aims to solve this problem by automating the quiz creation process, allowing users to focus on learning and understanding rather than on the mechanics of creating study aids.<br /> <br />
@@ -252,8 +232,13 @@ const HomePage = () => {
                 </p>
               </div>
             </div>
-            <div style={{ textAlign: 'center' }}>
-              <button style={buttonStyle} onClick={handleTryForFreeClick}>Try for Free</button>
+            <div className="centered-button">
+              <button
+                className="button-stylehp"
+                onClick={handleTryForFreeClick}
+              >
+                {isLoggedIn ? 'Continue' : 'Try For Free'}
+              </button>
             </div>
           </>
         )}
@@ -270,27 +255,26 @@ const HomePage = () => {
                 3. Take the quizzes to test your understanding and comprehension.<br />
                 4. Review your test results so you'll know where to concentrate to improve your score and eventualy master the topic based on the resources you're using.
               </p>
-              <button style={buttonStyle} onClick={handleUploadButtonClick}>
+              <button className="button-stylehp" onClick={handleUploadButtonClick}>
                 Click to start your learning journey!!!
               </button>
             </div>
 
             {/* Reviewer Link Input (conditionally displayed) */}
             {isUploadButtonClicked && (
-              <form onSubmit={handleReviewerLinkSubmit}>
-                <label htmlFor="reviewerLink">Enter Reviewer Text or Link:</label>
-                {/* <input type="text" id="reviewerLink" name="reviewerLink" value={reviewerLink} onChange={handleReviewerLinkChange} required /> */}
-                <textarea rows="8" id="reviewerLink" name="reviewerLink" value={reviewerLink} onChange={handleReviewerLinkChange} required></textarea>
-                <button style={buttonStyle} type="submit">Generate Quiz</button>
+              <form onSubmit={handleReviewerLinkSubmit} className="reviewer-form">
+                <label htmlFor="reviewerLink">Enter Reviewer Text or Link:</label> <br />
+                <textarea rows="8" id="reviewerLink" name="reviewerLink" value={reviewerLink} onChange={handleReviewerLinkChange} style={{ width: '100%' }} required></textarea>
+                <button className="button-stylehp" type="submit">Generate Quiz</button>
               </form>
             )}
           </div>
         )}
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <div className="centered-button">
           {content === 'default' && (
             <>
-              <button style={buttonStyle} onClick={() => navigate('/create-quiz/1')}>Get Started</button>
-              <button style={buttonStyle} onClick={handleLearnMoreClick}>Learn More</button>
+              <button className="button-stylehp" onClick={() => navigate('/create-quiz/1')}>Get Started</button>
+              <button className="button-stylehp" onClick={handleLearnMoreClick}>Learn More</button>
             </>
           )}
         </div>

@@ -1,39 +1,126 @@
-.read-the-docs-container {
-  text-align: center;
-  margin-top: 20px;
-  padding: 20px;
-  background-color: #6594E0; /* Background color */
-  color: white; /* Text color */
-  border-radius: 10px; /* Optional: Rounded corners */
-}
-
-.read-the-docs {
+.homepage {
+  font-family: 'Arial', sans-serif;
   text-align: left;
-  color: white; /* Inherit text color from parent */
-  margin-left: 20px; /* Left margin */
-  margin-right: 20px; /* Right margin */
+  background-color: #f0f8f5; /* Light greenish background */
+  color: #333;
 }
 
-.learn-more-content, .try-for-free-content {
-  color: black; /* Text color */
-  background-color: white; /* Background color for new content */
-  border-radius: 10px;
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
+  background-color: #e0f2e9; /* Lighter green for header */
+}
+
+.logo {
+  width: 120px;
+  height: 170px;
+  margin-bottom: 1px;
+}
+
+h1 {
+  color: #006400; /* Dark green for text */
+}
+
+.button-stylehp {
+  background-color: #228b22; /* Forest green */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  display: inline-block; /* Prevents stretching */
+}
+
+.button-stylehp:hover {
+  background-color: #006400; /* Darker green on hover */
+}
+
+.login-form {
+  margin: 20px auto;
   padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  max-width: 400px;
+  background-color: #fff;
+}
+
+.login-form label {
+  display: block;
+  margin-bottom: 5px;
+  color: #006400;
+}
+
+.login-form input {
+  width: calc(100% - 20px);
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+.content-container {
+  margin: 5px;
+  padding: 5px;
+  background-color: #e0f2e9;
+  border-radius: 10px;
+}
+
+.description {
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.learn-more-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .learn-more-item {
-  text-align: left;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.learn-more-item h2, .try-for-free-content h2 {
-  font-size: 1.5em;
+.learn-more-item h2 {
+  color: #228b22;
 }
 
-.learn-more-item p, .try-for-free-content p {
-  font-size: 1em;
-  line-height: 1.5;
+.learn-more-item p {
+  color: #333;
 }
 
-.try-for-free-content {
-  text-align: left;
+.load-reviewer-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.load-reviewer-container label {
+  display: block;
+  margin-bottom: 5px;
+  color: #006400;
+}
+
+.load-reviewer-container input {
+  width: calc(100% - 20px);
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
