@@ -198,6 +198,24 @@ app.get('/api/public-quiz', async (req, res) => {
   }
 });
 
+app.get('/api/quiz-list-user/:userId', async (req, res) => {
+  const userId = parseInt(req.params.userId, 10);
+  console.log(`Received user ID: ${userId}`);
+ 
+  if (isNaN(userId)) {
+    return res.status(400).send('Invalid user ID');
+  }
+
+  try {
+    const result = await pool.query('SELECT * FROM quiz WHERE user_id = $1 LIMIT 10', [userId]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+
 app.get('/api/quizes', async (req, res) => {
   const privacy = req.query.privacy
   try {

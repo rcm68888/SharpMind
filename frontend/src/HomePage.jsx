@@ -183,7 +183,10 @@ const HomePage = () => {
     <div className="homepage">
       <div className="header">
         <img src={logo} alt="Logo" className="logo" />
-        <h1>Welcome to SharpMind AI</h1>
+        <h1>Welcome to SharpMind</h1>
+        {isLoggedIn && (
+          <button className="button-stylehp" onClick={handleLogout}>Logout</button>
+        )}
       </div>
 
       {!isLoggedIn && (
@@ -198,10 +201,10 @@ const HomePage = () => {
       <div className="content-container">
         {content === 'default' && (
           <p className="description">
-            SharpMindAI is an innovative educational application designed to enhance learning and comprehension through interactive quizzes generated from user-uploaded documents. Users can upload various file types—text documents, PDFs, video, powerpoint and slides presentations.<br /> <br />
+            SharpMind is an innovative educational application designed to enhance learning and comprehension through interactive quizzes generated from user-uploaded documents. Users can upload various file types—text documents, PDFs, video, powerpoint and slides presentations.<br /> <br />
             Say goodbye to the traditional methods of self-testing that are not only time-consuming but often require the creation of custom quizzes or flashcards.<br /> <br />
-            SharpMindAI aims to solve this problem by automating the quiz creation process, allowing users to focus on learning and understanding rather than on the mechanics of creating study aids.<br /> <br />
-            SharpMindAI aims to provide a seamless and efficient learning experience, enabling users to deepen their understanding of study materials through interactive and automatically generated quizzes.
+            SharpMind aims to solve this problem by automating the quiz creation process, allowing users to focus on learning and understanding rather than on the mechanics of creating study aids.<br /> <br />
+            SharpMind aims to provide a seamless and efficient learning experience, enabling users to deepen their understanding of study materials through interactive and automatically generated quizzes.
           </p>
         )}
         {content === 'learnMore' && (
@@ -216,19 +219,19 @@ const HomePage = () => {
               <div className="learn-more-item">
                 <h2>Enhance Learning and Comprehension with Interactive Quizzes</h2>
                 <p>
-                  SharpMindAI generates quiz-style questionnaires from user-uploaded documents, helping users enhance their learning and comprehension of the material. By actively engaging with the content through quizzes, users can reinforce their understanding and retain information more effectively.
+                  SharpMind generates quiz-style questionnaires from user-uploaded documents, helping users enhance their learning and comprehension of the material. By actively engaging with the content through quizzes, users can reinforce their understanding and retain information more effectively.
                 </p>
               </div>
               <div className="learn-more-item">
                 <h2>Say Goodbye to Time-Consuming Custom Quiz Creation</h2>
                 <p>
-                  Say goodbye to the traditional methods of self-testing that require the creation of custom quizzes or flashcards. SharpMindAI automates the quiz creation process, eliminating the time-consuming task of manually crafting quizzes. Users can now focus on studying and mastering the content rather than on the mechanics of quiz creation.
+                  Say goodbye to the traditional methods of self-testing that require the creation of custom quizzes or flashcards. SharpMind automates the quiz creation process, eliminating the time-consuming task of manually crafting quizzes. Users can now focus on studying and mastering the content rather than on the mechanics of quiz creation.
                 </p>
               </div>
               <div className="learn-more-item">
                 <h2>Experience a Seamless and Efficient Learning Journey</h2>
                 <p>
-                  SharpMindAI aims to provide a seamless and efficient learning experience for users. By automating the quiz creation process, users can deepen their understanding of study materials through interactive and automatically generated quizzes. This intuitive approach enhances learning outcomes and makes the educational journey more enjoyable and productive.
+                  SharpMind aims to provide a seamless and efficient learning experience for users. By automating the quiz creation process, users can deepen their understanding of study materials through interactive and automatically generated quizzes. This intuitive approach enhances learning outcomes and makes the educational journey more enjoyable and productive.
                 </p>
               </div>
             </div>
@@ -248,10 +251,10 @@ const HomePage = () => {
             <div className="try-for-free-content">
               <h2>How to Use SharpMindAI: A Step-by-Step Guide</h2>
               <p>
-                Using SharpMindAI is simple and intuitive. Follow these steps to make the most of our platform:
+                Using SharpMind is simple and intuitive. Follow these steps to make the most of our platform:
                 <br />
                 1. Upload your study materials, including text documents, videos, and presentations.<br />
-                2. SharpMindAI will automatically generate quiz-style questionnaires based on your uploaded content.<br />
+                2. SharpMind will automatically generate quiz-style questionnaires based on your uploaded content.<br />
                 3. Take the quizzes to test your understanding and comprehension.<br />
                 4. Review your test results so you'll know where to concentrate to improve your score and eventualy master the topic based on the resources you're using.
               </p>
@@ -273,7 +276,7 @@ const HomePage = () => {
         <div className="centered-button">
           {content === 'default' && (
             <>
-              <button className="button-stylehp" onClick={() => navigate('/create-quiz/1')}>Get Started</button>
+              <button className="button-stylehp" onClick={() => navigate('/quiz-list')}>View Quizzes</button>
               <button className="button-stylehp" onClick={handleLearnMoreClick}>Learn More</button>
             </>
           )}

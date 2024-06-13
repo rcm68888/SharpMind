@@ -42,7 +42,7 @@ const SignUp = () => {
     <div className="signup-container">
       <div className="signup-header">
         <img src={logo} alt="Logo" className="logo-style" />
-        <h1>SharpMind AI User Registration</h1>
+        <h1>SharpMind 🧠 User Registration</h1>
       </div>
       <form onSubmit={handleSubmit} className="signup-form">
         <div className="form-group">

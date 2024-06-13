@@ -1,30 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../assets/logo.png';
 import '../styles/QuizList.css';
 
 const QuizList = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedQuiz, setSelectedQuiz] = useState('');
-  const navigate = useNavigate();
+  
 
   useEffect(() => {
     const fetchQuizzes = async () => {
+      setLoading(true); // Set loading state before fetching
+
       try {
-        const response = await axios.get('http://localhost:5001/api/public-quiz');
+        const response = await axios.get(`http://localhost:5001/api/quiz-list-user/${id}`);
         setQuizzes(response.data);
+        setLoading(false); // Set loading to false on successful fetch
       } catch (error) {
         setError('Failed to fetch quizzes');
-      } finally {
-        setLoading(false);
+        setLoading(false); // Set loading to false on error
       }
     };
 
-    fetchQuizzes();
-  }, []);
+    if (id) {
+      fetchQuizzes(); // Fetch quizzes only if `id` is defined
+    }
+  }, [id]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -42,7 +48,7 @@ const QuizList = () => {
     <>
       <div className="quiz-list-header">
         <img src={logo} alt="Logo" className="logo-style" />
-        <h1>SharpMind ⭐ Quiz List</h1>
+        <h1>SharpMind ⭐ Your Quiz List</h1>
       </div>
       <div className="quiz-list-container">
         <form onSubmit={handleSubmit} className="quiz-form">
