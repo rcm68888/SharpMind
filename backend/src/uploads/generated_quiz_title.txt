@@ -1,1 +1,1 @@
-INSERT INTO quiz (quiz_title, privacy) VALUES ("Node.js Module System (Notes App)",'public');
+INSERT INTO quiz (quiz_title, privacy) VALUES ("How Well Do You Know the Unique Platypus?", 'public');
