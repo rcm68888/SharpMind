@@ -4,6 +4,7 @@ import HomePage from './HomePage';
 import SignUp from './pages/SignUp';
 import QuizList from './pages/QuizList';
 import QuizListUser from './pages/QuizListUser';
+import TakeTheQuiz from './pages/TakeTheQuiz';
 import './styles/App.css';
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
       <Route path="/signup" element={<SignUp />} />
       <Route path="/quiz-list" element={<QuizList />} />
       <Route path="/quiz-list-user/:id" element={<QuizListUser />} />
+      <Route path="/take-the-quiz/:quizId" element={<TakeTheQuiz />} />
     </Routes>
   );
 };

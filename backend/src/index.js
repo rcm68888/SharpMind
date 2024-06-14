@@ -342,29 +342,6 @@ app.get('/api/users/:userId/results', async (req, res) => {
   }
 });
 
-app.get('/api/quiz/:fileId', async (req, res) => {
-  const fileId = parseInt(req.params.fileId, 10);
-  console.log(`Fetching quiz for fileId: ${fileId}`);
-  if (isNaN(fileId)) {
-    return res.status(400).send('Invalid fileId');
-  }
-
-  try {
-    const result = await pool.query('SELECT * FROM quiz WHERE file_id = $1', [fileId]);
-    const quiz = result.rows[0];
-    if (!quiz) {
-      return res.status(404).send('Quiz not found');
-    }
-
-    const questionsResult = await pool.query('SELECT * FROM question WHERE quiz_id = $1', [quiz.id]);
-    quiz.questions = questionsResult.rows;
-    res.json(quiz);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
-  }
-});
-
 app.post('/api/extract-youtube', async (req, res) => {
   const { videoUrl } = req.body;
   try {
@@ -416,6 +393,21 @@ app.get('/api/quiz-list-user/:userId', async (req, res) => {
   }
 });
 
+app.get('/api/take-the-quiz/:quizId', async (req, res) => {
+  const quizId = parseInt(req.params.quizId, 10);
+  console.log(`Received quiz ID: ${quizId}`);
+  if (isNaN(quizId)) {
+    return res.status(400).send('Invalid quiz ID');
+  }
+
+  try {
+    const result = await pool.query('SELECT * FROM question WHERE quiz_id = $1', [quizId]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
 
 app.get('/api/quizes', async (req, res) => {
   const privacy = req.query.privacy
