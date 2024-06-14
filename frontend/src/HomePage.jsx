@@ -211,9 +211,9 @@ const HomePage = () => {
           <>
             <div className="learn-more-content">
               <div className="learn-more-item">
-                <h2>Easily Generate Quizzes from Various File Types with SharpMindAI</h2>
+                <h2>Easily Generate Quizzes from Various File Types with SharpMind</h2>
                 <p>
-                  With SharpMindAI, users can effortlessly upload different file types, such as text documents, PDFs, videos, powerpoint and slides presentations and the app will automatically generate quiz-style questionnaires based on the content of these files. This innovative feature saves time and eliminates the need for manual quiz creation, allowing users to focus on learning and comprehension.
+                  With SharpMind, users can effortlessly upload different file types, such as text documents, PDFs, videos, powerpoint and slides presentations and the app will automatically generate quiz-style questionnaires based on the content of these files. This innovative feature saves time and eliminates the need for manual quiz creation, allowing users to focus on learning and comprehension.
                 </p>
               </div>
               <div className="learn-more-item">
@@ -249,7 +249,7 @@ const HomePage = () => {
           <div>
             {/* Instructions and Upload Button */}
             <div className="try-for-free-content">
-              <h2>How to Use SharpMindAI: A Step-by-Step Guide</h2>
+              <h2>How to Use SharpMind: A Step-by-Step Guide</h2>
               <p>
                 Using SharpMind is simple and intuitive. Follow these steps to make the most of our platform:
                 <br />
