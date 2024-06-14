@@ -1,3 +1,27 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f8f5;
+  color: #333;
+}
+
+.ttq-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 5px 0;
+  background-color: #e0f2e9;
+}
+
+.ttq-header .logo-style {
+  width: 100px;
+}
+
+.ttq-header h1 {
+  font-size: 2.5em;
+  color: #006400;
+}
+
 .quiz-window {
   text-align: center;
   font-size: clamp(20px, 2.5vw, 24px);
@@ -13,13 +37,13 @@
 
 .option {
   display: block;
-  border: 1px solid #4CAF50; /* Green border */
-  border-radius: 15px;
-  padding: 15px 30px;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 15px;
   text-decoration: none;
-  color: #4CAF50; /* Green text */
-  background-color: #f9f9f9;
-  transition: 0.3s;
+  color: #fff;
+  background-color: #228b22; 
+  transition: background-color 0.3s;
   font-size: 1em;
   outline: none;
   user-select: none;
@@ -28,8 +52,7 @@
 }
 
 .option:hover {
-  color: white;
-  background-color: #4CAF50; /* Green background */
+  background-color: #006400; /* Using the same hover color as HomePage.css */
 }
 
 .question {
@@ -37,50 +60,33 @@
   margin: 0 auto;
 }
 
-.game-over h1 {
+.game-over {
   margin-top: 4em;
-  font-size: 48px;
+  text-align: center;
+}
+
+.game-over h1 {
+  font-size: 2.5em;
+  color: #006400;
 }
 
 .game-over p {
-  font-size: 24px;
+  font-size: 1.5em;
   margin-bottom: 3em;
+  color: #333;
 }
 
 .game-over button {
-  border: 1px solid #4CAF50; /* Green border */
-  border-radius: 50px;
-  padding: 15px 30px;
-  text-decoration: none;
-  color: #4CAF50; /* Green text */
-  background-color: #f9f9f9;
-  transition: 0.3s;
-  font-size: 1em;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  color: #fff;
+  background-color: #228b22; 
+  transition: background-color 0.3s;
   cursor: pointer;
-  outline: none;
+  margin: 0 10px; /* Space between buttons */
 }
 
 .game-over button:hover {
-  color: white;
-  background-color: #4CAF50; /* Green background */
+  background-color: #006400; /* Using the same hover color as HomePage.css */
 }
-Ensure Your Backend Route
-Make sure your backend route is correctly handling the request to /api/question/:quizId. Here’s the route again for reference:
-
-javascript
-Copy code
-app.get('/api/question/:quizId', async (req, res) => {
-  const quizId = parseInt(req.params.quizId, 10);
-  console.log(`Received quiz ID: ${quizId}`);
-  if (isNaN(quizId)) {
-    return res.status(400).send('Invalid quiz ID');
-  }
-
-  try {
-    const result = await pool.query('SELECT * FROM question WHERE quiz_id = $1', [quizId]);
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
-  }
-});

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../assets/logo.png';
 import '../styles/QuizList.css';
@@ -29,7 +29,7 @@ const QuizList = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (selectedQuiz) {
-      navigate(`/quiz/${selectedQuiz}`);
+      navigate(`/take-the-quiz/${selectedQuiz}`);
     } else {
       alert('Please select a quiz.');
     }
@@ -42,7 +42,7 @@ const QuizList = () => {
     <>
       <div className="quiz-list-header">
         <img src={logo} alt="Logo" className="logo-style" />
-        <h1>SharpMind ⭐ Quiz List</h1>
+        <h1>SharpMind 😎👌🔥 Quiz List</h1>
       </div>
       <div className="quiz-list-container">
         <form onSubmit={handleSubmit} className="quiz-form">

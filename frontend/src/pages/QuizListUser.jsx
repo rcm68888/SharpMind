@@ -35,7 +35,7 @@ const QuizList = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (selectedQuiz) {
-      navigate(`/quiz/${selectedQuiz}`);
+      navigate(`/take-the-quiz/${selectedQuiz}`);
     } else {
       alert('Please select a quiz.');
     }
@@ -48,7 +48,7 @@ const QuizList = () => {
     <>
       <div className="quiz-list-header">
         <img src={logo} alt="Logo" className="logo-style" />
-        <h1>SharpMind ⭐ Your Quiz List</h1>
+        <h1>SharpMind 😎👌🔥 Your Quiz List</h1>
       </div>
       <div className="quiz-list-container">
         <form onSubmit={handleSubmit} className="quiz-form">

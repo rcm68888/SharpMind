@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import {  useParams, useNavigate } from 'react-router-dom';
 import '../styles/TakeTheQuiz.css';
+import logo from '../assets/logo.png';
 
 const TakeTheQuiz = () => {
   const { quizId } = useParams();
@@ -15,7 +16,7 @@ const TakeTheQuiz = () => {
   const optionMap = { A: 0, B: 1, C: 2, D: 3 };
 
   const pickAnswer = (e) => {
-    let userAnswer = e.target.innerText;
+    const userAnswer = e.target.innerText;
 
     if (quiz[number].correct_option === userAnswer) setPts(pts + 1);
     setNumber(number + 1);
@@ -37,38 +38,50 @@ const TakeTheQuiz = () => {
       }
     };
 
-    fetchQuiz();
+    if (quizId) {
+      fetchQuiz();
+    }
   }, [quizId]); // Ensure useEffect depends on quizId
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="quiz-window">
-      {quiz[number] && (
-        <>
-          <div className="question">{quiz[number].question}</div>
-          <div className="options">
-            {quiz[number].options.map((item, index) => (
-              <button key={index} className="option" onClick={pickAnswer}>{item}</button>
-            ))}
-          </div>
-        </>
-      )}
-      {number === quiz.length && <GameOver pts={pts} />}
-    </div>
+      <div className="quiz-window">
+        {number < quiz.length ? (
+          <>
+            <div className="question">{quiz[number].question}</div>
+            <div className="options">
+              {quiz[number].options.map((item, index) => (
+                <button key={index} className="option" onClick={pickAnswer}>{item}</button>
+              ))}
+            </div>
+          </>
+        ) : (
+          <GameOver pts={pts} total={quiz.length} />
+        )}
+      </div>
   );
 };
 
-const GameOver = ({ pts }) => {
+const GameOver = ({ pts, total }) => {
+  const navigate = useNavigate();
+
   const refreshPage = () => window.location.reload();
+  const goHome = () => navigate('/');
 
   return (
-    <div className="game-over">
-      <h1>Game Over</h1>
-      <p>You did {pts} out of {quiz.length}!</p>
-      <button onClick={refreshPage}>Retry</button>
-    </div>
+    <>
+      <div className="ttq-header">
+        <img src={logo} alt="Logo" className="logo-style" />
+        <h2>SharpMind ˚ ༘ ೀ⋆｡˚ Results</h2>
+      </div>
+      <div className="game-over">
+        <p>Your score: {pts} out of {total}!</p>
+        <button onClick={refreshPage}>Retry</button>
+        <button onClick={goHome}>Home</button>
+      </div>
+    </>
   );
 };
 
