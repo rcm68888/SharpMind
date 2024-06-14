@@ -1,0 +1,1 @@
+INSERT INTO quiz (quiz_title, privacy) VALUES ("Node.js Module System (Notes App)",'public');

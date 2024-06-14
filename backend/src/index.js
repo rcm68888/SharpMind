@@ -7,9 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import { OpenAI } from 'openai';
-
-
+import openAI from 'openai';
 
 dotenv.config();
 const { Pool } = pkg;
@@ -19,6 +17,10 @@ const PORT = 5001;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+// Get the directory name of the current module file
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 let publicQuizzes = [];
 
@@ -31,17 +33,22 @@ const pool = new Pool({
   port: 5432,
 });
 
-// Get the directory name of the current module file
-//const currentDir = dirname(new URL(import.meta.url).pathname);
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Function to save data to a file
+const saveToFile = (dir, fileName, data, res) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
 
-// Read the prompt from a .prompt file
-const promptFilePath = path.join(__dirname, '.prompt');
-const prompt = fs.readFileSync(promptFilePath, 'utf-8');
-
-// Configure OpenAI API client
-const openaiClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const filePath = path.join(dir, fileName);
+  fs.writeFile(filePath, data, (err) => {
+    if (err) {
+      console.error(`Error saving to ${filePath}:`, err);
+      res.status(500).send(`Error saving ${fileName}`);
+    } else {
+      res.status(200).send(`${fileName} saved successfully`);
+    }
+  });
+};
 
 // Routes
 app.get('/', async (req, res) => {
@@ -382,23 +389,63 @@ app.post('/api/extract-gdoc', async (req, res) => {
   }
 });
 
+app.get('/api/public-quiz', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * from quiz where privacy=$1 LIMIT 10', ['public']);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+app.get('/api/quiz-list-user/:userId', async (req, res) => {
+  const userId = parseInt(req.params.userId, 10);
+  console.log(`Received user ID: ${userId}`);
+ 
+  if (isNaN(userId)) {
+    return res.status(400).send('Invalid user ID');
+  }
+
+  try {
+    const result = await pool.query('SELECT * FROM quiz WHERE user_id = $1 LIMIT 10', [userId]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+
+app.get('/api/quizes', async (req, res) => {
+  const privacy = req.query.privacy
+  try {
+    const result = await pool.query('SELECT * from quiz where privacy=$1 LIMIT 10', [privacy]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
 app.post('/api/generate-quiz', async (req, res) => {
   // Read the prompt from a .prompt file
   const promptFilePath = path.join(__dirname, '.prompt');
   const prompt = fs.readFileSync(promptFilePath, 'utf-8');
   const { text } = req.body;
-  const openai = new openAI({ apiKey: process.env.OPENAI_API_KEY, });
+  const openai = new openAI({ apiKey: process.env.OPENAI_API_KEY,});
   try {
     const prompt = fs.readFileSync(promptFilePath, 'utf-8');
     const messages = [
       { role: 'system', content: prompt },
       { role: 'user', content: text }
     ];
+    //console.log(messages);
 
     const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: messages,
-      max_tokens: 800,
+      max_tokens: 1500,
       n: 1,
       stop: null,
       temperature: 0.7,
@@ -411,6 +458,56 @@ app.post('/api/generate-quiz', async (req, res) => {
   }
 });
 
+app.post('/api/generate-quiz_title', async (req, res) => {
+  // Read the prompt from a .prompt file
+  const promptFilePath1 = path.join(__dirname, '.prompt1');
+  const prompt1 = fs.readFileSync(promptFilePath1, 'utf-8');
+  const { text } = req.body;
+  const openai1 = new openAI({ apiKey: process.env.OPENAI_API_KEY,});
+  try {
+    const prompt1 = fs.readFileSync(promptFilePath1, 'utf-8');
+    const messages = [
+      { role: 'system', content: prompt1 },
+      { role: 'user', content: text }
+    ];
+    //console.log(messages);
+
+    const response1 = await openai1.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: messages,
+      max_tokens: 1500,
+      n: 1,
+      stop: null,
+      temperature: 0.7,
+    });
+    const quiz_title = response1.choices[0].message.content;
+    res.json({ quiz_title });
+  } catch (error) {
+    console.error('Error generating quiz title with ChatGPT:', error.message);
+    res.status(500).send('Error generating quiz title');
+  }
+});
+
+app.post('/api/save-quiz', (req, res) => {
+  const { quiz } = req.body;
+
+  if (!quiz) {
+    return res.status(400).send('Quiz content is missing');
+  }
+
+  const uploadsDir = path.join(__dirname, 'uploads');
+  saveToFile(uploadsDir, 'generated_quiz.txt', quiz, res);
+});
+
+app.post('/api/save-quiz_title', (req, res) => {
+  const { quiz_title  } = req.body;
+  if (!quiz_title) {
+    return res.status(400).send('Quiz title is missing');
+  }
+  const uploadsDir = path.join(__dirname, 'uploads');
+  saveToFile(uploadsDir, 'generated_quiz_title.txt', quiz_title, res);
+});
+
 app.get('/api/quiz/:id', (req, res) => {
   const quizId = parseInt(req.params.id, 10);
   const quiz = publicQuizzes.find(q => q.id === quizId);
@@ -420,17 +517,6 @@ app.get('/api/quiz/:id', (req, res) => {
     res.status(404).json({ error: 'Quiz not found' });
   }
 });
-
-app.get('/api/public-quiz', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * from quiz where privacy=$1 LIMIT 10', ['public']);
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
-  }
-});
-
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

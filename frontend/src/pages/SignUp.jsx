@@ -1,25 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
+import '../styles/SignUp.css';
 import axios from 'axios';
-
-const logoStyle = {
-  width: '110px',
-  height: '110px',
-  marginBottom: '10px',
-  marginRight: '20px'
-};
-
-const buttonStyle = {
-  padding: '10px 20px',
-  fontSize: '16px',
-  cursor: 'pointer',
-  border: 'none',
-  borderRadius: '5px',
-  backgroundColor: '#007BFF',
-  color: '#FFF',
-  margin: '10px'
-};
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -56,27 +39,61 @@ const SignUp = () => {
   };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      <img src={logo} alt="Logo" style={logoStyle} />
-      <h1>SharpMind AI User Registration</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name:</label>
-          <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+    <div className="signup-container">
+      <div className="signup-header">
+        <img src={logo} alt="Logo" className="logo-style" />
+        <h1>SharpMind 🧠 User Registration</h1>
+      </div>
+      <form onSubmit={handleSubmit} className="signup-form">
+        <div className="form-group">
+          <label htmlFor="name">Name:</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            className="form-control"
+          />
         </div>
-        <div>
-          <label>Email:</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+        <div className="form-group">
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            className="form-control"
+          />
         </div>
-        <div>
-          <label>Password:</label>
-          <input type="password" name="password" value={formData.password} onChange={handleChange} required />
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            className="form-control"
+          />
         </div>
-        <div>
-          <label>Account Type:</label>
-          <input type="text" name="acct_type" value={formData.acct_type} onChange={handleChange} required />
+        <div className="form-group">
+          <label htmlFor="acct_type">Account Type:</label>
+          <input
+            type="text"
+            id="acct_type"
+            name="acct_type"
+            value={formData.acct_type}
+            onChange={handleChange}
+            required
+            className="form-control"
+          />
         </div>
-        <button style={buttonStyle} type="submit">Sign Up</button>
+        <button type="submit" className="button-style">Sign Up</button>
       </form>
     </div>
   );
