@@ -1,5 +1,5 @@
-INSERT INTO question (question_text, o1, o2, o3, o4, cor_option) VALUES ("What is the formal scientific name for the Platypus?", "Ornithorhynchus anatinus", "Uniqueus platypus", "Duckbillus maximus", "Evolutus bizarrens", "Ornithorhynchus anatinus");
+INSERT INTO question (question_text, o1, o2, o3, o4, cor_option) VALUES ("Who is the creator of the television series 'Game of Thrones'?", "David Benioff", "George R.R. Martin", "Peter Dinklage", "Lena Headey", "David Benioff");
 
-INSERT INTO question (question_text, o1, o2, o3, o4, cor_option) VALUES ("When was the Platypus recognized as a separate species?", "1799", "1850", "1600", "2005", "1799");
+INSERT INTO question (question_text, o1, o2, o3, o4, cor_option) VALUES ("In which fictional continents is 'Game of Thrones' set?", "Azeroth and Kalimdor", "Westeros and Essos", "Middle-earth and Narnia", "Hogwarts and Diagon Alley", "Westeros and Essos");
 
-INSERT INTO question (question_text, o1, o2, o3, o4, cor_option) VALUES ("What is the current conservation status of the Platypus according to the IUCN Red List?", "Endangered", "Critically Endangered", "Vulnerable", "Near Threatened", "Near Threatened");
+INSERT INTO question (question_text, o1, o2, o3, o4, cor_option) VALUES ("How many Primetime Emmy Awards has the series 'Game of Thrones' won?", "23", "35", "59", "41", "59");
