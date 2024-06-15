@@ -1,1 +1,18 @@
-  Generate a quiz_title based on the text provided. Save Format the file in a csv,"|" delimited format as follows: quiz_title|'public'); Also, preceeds the quiz_title file with these "INSERT INTO quiz (quiz_title, privacy) VALUES (".
+Generate a JSON object for a quiz based on the following text. Make it have 10 questions. The JSON object should have the following structure:
+{
+  "user_id": 1,
+  "quiz_title": "Generated title based on input text",
+  "privacy": "public",
+  "questions": [
+    {
+      "question_text": "Question text",
+      "options": ["OptionA", "OptionB", "OptionC", "OptionD"],
+      "correct_option": "A"
+    },
+    {
+      "question_text": "Question text",
+      "options": ["OptionA", "OptionB", "OptionC", "OptionD"],
+      "correct_option": "B"
+    }
+  ]
+}

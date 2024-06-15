@@ -29,7 +29,7 @@ const QuizList = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (selectedQuiz) {
-      navigate(`/quiz/${selectedQuiz}`);
+      navigate(`/take-the-quiz/${selectedQuiz}`);
     } else {
       alert('Please select a quiz.');
     }

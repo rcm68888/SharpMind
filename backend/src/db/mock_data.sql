@@ -3,18 +3,11 @@ INSERT INTO users (name, email, password, acct_type) VALUES ('Jane Smith', 'jane
 INSERT INTO users (name, email, password, acct_type) VALUES ('Rc Madrilejo', 'rcm@example.com', '1234', 'user');
 INSERT INTO users (name, email, password, acct_type) VALUES ('Edmark Arieta', 'earieta@example.com', '1234', 'user');
 
-INSERT INTO file (user_id, file_name, file_type) VALUES (1, 'math_notes.pdf', 'pdf');
-INSERT INTO file (user_id, file_name, file_type) VALUES (1, 'history_notes.docx', 'docx');
-INSERT INTO file (user_id, file_name, file_type) VALUES (2, 'science_notes.pdf', 'pdf');
-INSERT INTO file (user_id, file_name, file_type) VALUES (2, 'geography_notes.pptx', 'pptx');
-INSERT INTO file (user_id, file_name, file_type) VALUES (1, 'javascript.txt', 'txt');
-
-
-INSERT INTO quiz (file_id, user_id, quiz_title, privacy) VALUES (1, 1, 'Math Quiz', 'public');
-INSERT INTO quiz (file_id, user_id, quiz_title, privacy) VALUES (2, 1, 'History Quiz', 'public');
-INSERT INTO quiz (file_id, user_id, quiz_title, privacy) VALUES (3, 2, 'Science Quiz', 'public');
-INSERT INTO quiz (file_id, user_id, quiz_title, privacy) VALUES (4, 2, 'Geography Quiz', 'public');
-INSERT INTO quiz (file_id, user_id, quiz_title, privacy) VALUES (5, 1, 'Javascript Handbook A hand crafted markdown document contains all major Javascript topics covered, taken from different sources. Brush Up your JS memory.', 'public');
+INSERT INTO quiz (user_id, quiz_title, privacy) VALUES (1, 'Math Quiz', 'public');
+INSERT INTO quiz (user_id, quiz_title, privacy) VALUES (1, 'History Quiz', 'public');
+INSERT INTO quiz (user_id, quiz_title, privacy) VALUES (2, 'Science Quiz', 'public');
+INSERT INTO quiz (user_id, quiz_title, privacy) VALUES (2, 'Geography Quiz', 'public');
+INSERT INTO quiz (user_id, quiz_title, privacy) VALUES (1, 'Javascript Handbook A hand crafted markdown document contains all major Javascript topics covered, taken from different sources. Brush Up your JS memory.', 'public');
 
 INSERT INTO question (quiz_id, question_text, options, correct_option) VALUES (1, 'What is 2+2?', '["1", "2", "3", "4"]', 'D');
 INSERT INTO question (quiz_id, question_text, options, correct_option) VALUES (1, 'What is 3*3?', '["6", "9", "12", "15"]', 'B');
@@ -44,7 +37,7 @@ INSERT INTO question (quiz_id, question_text, options, correct_option) VALUES (5
 INSERT INTO question (quiz_id, question_text, options, correct_option) VALUES (5, 'What is the output of the following code snippet? for (var i = 0; i < 7; ++i) { setTimeout(function () { console.log(i); }, 1000); }', '["8 times 8", "0 to 7 in ascending order", "7 times 7", "Compilation Error"]', 'A');
 INSERT INTO question (quiz_id, question_text, options, correct_option) VALUES (5, 'Which method is used to join two strings in JavaScript?', '["replace", "slice", "indexOf", "concat"]', 'D');
 
-INSERT INTO result (user_id, quiz_id, score) VALUES (1, 1, 90);
-INSERT INTO result (user_id, quiz_id, score) VALUES (1, 2, 85);
-INSERT INTO result (user_id, quiz_id, score) VALUES (2, 3, 95);
-INSERT INTO result (user_id, quiz_id, score) VALUES (2, 4, 88);
+INSERT INTO result (user_id, quiz_id, score, answers) VALUES (1, 1, 90, '{"1": "D", "2": "B", "3": "C", "4": "C", "5": "B"}');
+INSERT INTO result (user_id, quiz_id, score, answers) VALUES (1, 2, 85, '{"6": "B", "7": "B", "8": "C", "9": "A", "10": "A"}');
+INSERT INTO result (user_id, quiz_id, score, answers) VALUES (2, 3, 95, '{"11": "B", "12": "B", "13": "C", "14": "A", "15": "C"}');
+INSERT INTO result (user_id, quiz_id, score, answers) VALUES (2, 4, 88, '{"16": "C", "17": "B", "18": "B", "19": "C", "20": "D"}');

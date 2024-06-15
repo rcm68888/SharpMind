@@ -1,1 +1,1 @@
-INSERT INTO quiz (quiz_title, privacy) VALUES ("How Well Do You Know the Unique Platypus?", 'public');
+How well do you know horse communication?
