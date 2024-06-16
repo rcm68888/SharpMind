@@ -467,7 +467,7 @@ app.post('/api/extract-gdoc', async (req, res) => {
 
 app.get('/api/public-quiz', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * from quiz where privacy=$1 LIMIT 20', ['public']);
+    const result = await pool.query('SELECT * from quiz where privacy=$1 LIMIT 40', ['public']);
     res.json(result.rows);
   } catch (err) {
     console.error(err);
