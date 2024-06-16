@@ -66,7 +66,7 @@ app.post('/api/signup', async (req, res) => {
     return res.status(400).send({ message: 'Name cannot be greater than 40 characters' });
   }
 
-  if (password.length < 8) {
+  if (password.length < 4) {
     return res.status(400).send({ message: 'Password cannot be less than 8 characters' });
   }
 
