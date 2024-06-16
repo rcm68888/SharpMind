@@ -3,8 +3,8 @@ import HomeDefault from './pages/Home';
 import LearnMoreItem from './pages/LearnMoreItem';
 import LoadReviewer from './pages/LoadReviewer';
 
-const HomePage = ({ isLoggedIn, handleLogout }) => {
-  const [content, setContent] = useState('default');
+const HomePage = ({ isLoggedIn, handleLogout, content: initialContent = 'default' }) => {
+  const [content, setContent] = useState(initialContent);
 
   return (
     <div className="home-page">

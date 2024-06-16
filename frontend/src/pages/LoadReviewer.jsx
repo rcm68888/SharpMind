@@ -58,24 +58,9 @@ const LoadReviewer = ({ handleLogout, isLoggedIn }) => {
     if (text) {
       try {
         const response = await axios.post('http://localhost:5001/api/generate-quiz', { text });
-        const quizData = response.data.quiz;
+        const quizData = response.data;
         setQuiz(quizData);
 
-        const blob = new Blob([quizData], { type: 'text/plain;charset=utf-8' });
-        saveAs(blob, 'generated_quiz.txt');
-
-        const response1 = await axios.post('http://localhost:5001/api/generate-quiz_title', { text });
-        const quizTitleData = response1.data.quiz_title;
-        setQuizTitle(quizTitleData);
-
-        const blob1 = new Blob([quizTitleData], { type: 'text/plain;charset=utf-8' });
-        saveAs(blob1, 'generated_quiz_title.txt');
-
-        // Save quiz on the backend
-        await axios.post('http://localhost:5001/api/save-quiz', { quiz: quizData });
-        await axios.post('http://localhost:5001/api/save-quiz_title', { quiz_title: quizTitleData });
-
-        // Navigate to QuizList page after saving the quiz
         navigate('/quiz-list');
 
       } catch (error) {

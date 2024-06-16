@@ -20,8 +20,8 @@ const App = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/load-reviewer" element={<HomePage content="loadReviewer" />} />  {/* Pre-set content */}
+      <Route path="/" element={<HomePage isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
+      <Route path="/load-reviewer" element={<HomePage isLoggedIn={isLoggedIn} handleLogout={handleLogout} content="loadReviewer" />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/quiz-list" element={<QuizList />} />
       <Route path="/quiz-list-user/:id" element={<QuizListUser />} />
