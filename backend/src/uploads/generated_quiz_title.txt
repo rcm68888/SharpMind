@@ -1,1 +1,1 @@
-INSERT INTO quiz (quiz_title, privacy) VALUES ("Game of Thrones: How Well Do You Know the Show?", 'public');
+INSERT INTO quiz (quiz_title, privacy) VALUES ("Game of Thrones - Trivia", 'public');

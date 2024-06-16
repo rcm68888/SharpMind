@@ -1,5 +1,5 @@
-INSERT INTO question (question_text, o1, o2, o3, o4, cor_option) VALUES ("Who is the creator of the television series 'Game of Thrones'?", "David Benioff", "George R.R. Martin", "Peter Dinklage", "Lena Headey", "David Benioff");
+INSERT INTO question (question_text, o1, o2, o3, o4, cor_option) VALUES ("Who is the creator of the television series 'Game of Thrones'?", "George R.R. Martin", "Emilia Clarke", "David Benioff and D.B. Weiss", "Kit Harington", "David Benioff and D.B. Weiss");
 
-INSERT INTO question (question_text, o1, o2, o3, o4, cor_option) VALUES ("In which fictional continents is 'Game of Thrones' set?", "Azeroth and Kalimdor", "Westeros and Essos", "Middle-earth and Narnia", "Hogwarts and Diagon Alley", "Westeros and Essos");
+INSERT INTO question (question_text, o1, o2, o3, o4, cor_option) VALUES ("Which of the following is NOT a main cast member of 'Game of Thrones'?", "Sophie Turner", "Nikolaj Coster-Waldau", "Liam Cunningham", "Emma Watson", "Emma Watson");
 
-INSERT INTO question (question_text, o1, o2, o3, o4, cor_option) VALUES ("How many Primetime Emmy Awards has the series 'Game of Thrones' won?", "23", "35", "59", "41", "59");
+INSERT INTO question (question_text, o1, o2, o3, o4, cor_option) VALUES ("What is the fictional continent where 'Game of Thrones' is primarily set?", "Essos", "North America", "Asia", "Westeros", "Westeros");

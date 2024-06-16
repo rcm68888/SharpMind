@@ -112,6 +112,7 @@ const LoadReviewer = ({ handleLogout, isLoggedIn }) => {
           <button className="button-stylehp" onClick={handleUploadButtonClick}>
             Click to start your learning journey!!!
           </button>
+          <button className="button-stylehp" onClick={() => navigate('/quiz-list')}>View Quizzes</button>
         </div>
         <div id="reviewer-form" style={{ display: 'none' }}>
           <form onSubmit={handleReviewerLinkSubmit} className="reviewer-form">

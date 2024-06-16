@@ -105,7 +105,6 @@ const Home = () => {
       </div>
       {errorMessage && <p>{errorMessage}</p>}
       <div className="learn-more">
-        <button className="button-stylehp" onClick={() => navigate('/quiz-list')}>View Quizzes</button>
         <button className="button-stylehp" onClick={handleLearnMoreClick}>Learn More</button>
       </div>
     </div>

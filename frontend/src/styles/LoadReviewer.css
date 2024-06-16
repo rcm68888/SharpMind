@@ -1,0 +1,45 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
+  background-color: #e0f2e9; /* Lighter green for header */
+}
+
+.logo {
+  width: 100px;
+  height: 170px;
+  margin-bottom: 1px;
+}
+
+.button-stylehp {
+  background-color: #228b22; /* Forest green */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  display: inline-block; /* Prevents stretching */
+}
+
+.button-stylehp:hover {
+  background-color: #006400; /* Darker green on hover */
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+.try-for-free-content {
+  margin: 5px;
+  padding: 5px;
+  background-color: #e0f2e9;
+  border-radius: 10px;
+  text-align: justify;
+}
+
+
