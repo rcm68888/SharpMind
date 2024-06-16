@@ -1,22 +1,31 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import pkg from 'pg';
 import axios from 'axios';
 import fs from 'fs';
+import pg from 'pg';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import openAI from 'openai';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import authRoutes from './auth.js';
+import cookieParser from 'cookie-parser';
+import { generateToken, verifyToken } from './auth.js';
+import { createRequire } from 'module';
 
 dotenv.config();
-const { Pool } = pkg;
+console.log('JWT_SECRET:', process.env.JWT_SECRET);
 const app = express();
+const { Pool } = new pg.Pool();
 const PORT = 5001;
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use('/api', authRoutes);
+app.use(cookieParser());
 
 // Get the directory name of the current module file
 const __filename = fileURLToPath(import.meta.url);
@@ -25,13 +34,15 @@ const __dirname = path.dirname(__filename);
 let publicQuizzes = [];
 
 // Database connection
-const pool = new Pool({
+const pool = new pg.Pool({
   user: 'labber',
   host: 'localhost',
   database: 'sharpmind',
   password: 'labber',
   port: 5432,
 });
+
+const JWT_SECRET = process.env.JWT_SECRET || 'SharpMind_jwt_secret123';
 
 // Function to save data to a file
 const saveToFile = (dir, fileName, data, res) => {
@@ -52,7 +63,7 @@ const saveToFile = (dir, fileName, data, res) => {
 
 // Routes
 app.get('/', async (req, res) => {
-  res.status(200).send({ message: 'Welcome to SharpMindAI', date: new Date() });
+  res.status(200).send({ message: 'Welcome to SharpMind', date: new Date() });
 });
 
 app.post('/api/signup', async (req, res) => {
@@ -71,18 +82,67 @@ app.post('/api/signup', async (req, res) => {
   }
 
   try {
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Insert user into database
     const newUser = await pool.query(
       'INSERT INTO users (name, email, password, acct_type) VALUES ($1, $2, $3, $4) RETURNING *',
-      [name, email, password, acct_type]
+      [name, email, hashedPassword, acct_type]
     );
 
-    res.json(newUser.rows[0]);
+    const token = jwt.sign({ id: newUser.rows[0].id, email: newUser.rows[0].email }, JWT_SECRET, { expiresIn: '1h' });
+
+    // Create JWT token
+    res.json({ token, user: { id: newUser.rows[0].id, email: newUser.rows[0].email } });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
+    console.error('Error registering user:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required' });
+  }
+
+  try {
+    const userResult = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+
+    if (userResult.rows.length === 0) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+
+    const user = userResult.rows[0];
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+
+    // Set the token as a cookie with HttpOnly and Secure flags
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Set to true in production
+      sameSite: 'strict', // Set the sameSite attribute
+    });
+
+    // Return user information without sensitive data
+    res.json({ id: user.id, email: user.email, name: user.name });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/api/logout', (req, res) => {
+  res.clearCookie('token').json({ message: 'Logged out successfully' });
+});
 
 app.put('/api/users/:userId', async (req, res) => {
   const userId = parseInt(req.params.userId, 10);

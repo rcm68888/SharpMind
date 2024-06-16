@@ -1,3 +1,0 @@
-INSERT INTO question (quiz_id, question_text, options, correct_option) VALUES (1, "How do horses communicate?", '["Vocalizations", "Sign language", "Text messages", "Smoke signals"]', 'A');
-INSERT INTO question (quiz_id, question_text, options, correct_option) VALUES (1, "What can affect the meaning of a whinny for a horse?", '["Tone", "Volume", "Tempo", "All of the above"]', 'D');
-INSERT INTO question (quiz_id, question_text, options, correct_option) VALUES (1, "Which statement is true about horses and sound frequencies?", '["Horses can hear higher frequencies than humans", "Humans can hear higher frequencies than horses", "Horses can hear lower frequencies than humans", "Humans can hear lower frequencies than horses"]', 'A');
