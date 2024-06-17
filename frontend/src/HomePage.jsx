@@ -10,7 +10,7 @@ const HomePage = ({ isLoggedIn, handleLogout, content: initialContent = 'default
     <div className="home-page">
       {content === 'default' && <HomeDefault handleLogout={handleLogout} isLoggedIn={isLoggedIn} />}
       {content === 'learn_more_item' && <LearnMoreItem handleLogout={handleLogout} isLoggedIn={isLoggedIn} />}
-      {content === 'loadReviewer' && <LoadReviewer handleLogout={handleLogout} isLoggedIn={isLoggedIn} />}
+      {content === 'load-reviewer' && <LoadReviewer handleLogout={handleLogout} isLoggedIn={isLoggedIn} />}
     </div>
   );
 };

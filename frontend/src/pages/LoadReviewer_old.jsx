@@ -15,7 +15,7 @@ const LoadReviewer = ({ handleLogout, isLoggedIn }) => {
   const [reviewerLink, setReviewerLink] = useState('');
   const [error, setError] = useState(null);
   const [quiz, setQuiz] = useState('');
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
 
   const handleUploadButtonClick = () => {
     document.getElementById('reviewer-form').style.display = 'block';
@@ -25,10 +25,20 @@ const LoadReviewer = ({ handleLogout, isLoggedIn }) => {
     setReviewerLink(e.target.value);
   };
 
+  const isURL = (str) => {
+    try {
+      new URL(str);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+    
   const handleReviewerLinkSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setQuiz('');
+    //setQuizTitle('');
     setLoading(true); // Start loading
     let text;
     if (isURL(reviewerLink)) {
@@ -63,15 +73,6 @@ const LoadReviewer = ({ handleLogout, isLoggedIn }) => {
     }
   };
 
-  const handleViewQuizzes = () => {
-    const user = JSON.parse(localStorage.getItem('loggedInUser'));
-    if (user) {
-      navigate(`/quiz-list-user/${user.id}`);
-    } else {
-      navigate('/quiz-list');
-    }
-  };
-
   return (
     <div className="load-reviewer-page">
       {loading ? (
@@ -79,14 +80,17 @@ const LoadReviewer = ({ handleLogout, isLoggedIn }) => {
           Loading your quiz...
         </div>
       ) : (
-        <>
+        <>   
           <div className="header">
+            {isLoggedIn && (
+              <button className="button-stylehp" onClick={handleLogout}>Logout</button>
+            )}
             <img src={logo} alt="Logo" className="logo" />
-            <h2>This is SharpMind's Quiz Generator Page (◕‿◕)</h2>
+            <h2>This is SharpMind's Quiz Page</h2>
           </div>
           <div>
+            {/* Instructions and Upload Button */}
             <div className="try-for-free-content">
-              <button className="button-stylehp" onClick={handleLogout}>Logout</button>
               <h3>How to Use SharpMind: A Step-by-Step Guide</h3>
               <p>
                 Using SharpMind is simple and intuitive. Follow these steps to make the most of our platform:
@@ -99,7 +103,7 @@ const LoadReviewer = ({ handleLogout, isLoggedIn }) => {
               <button className="button-stylehp" onClick={handleUploadButtonClick}>
                 Click to start your learning journey!!!
               </button>
-              <button className="button-stylehp" onClick={handleViewQuizzes}>View Quizzes</button>
+              <button className="button-stylehp" onClick={() => navigate('/quiz-list')}>View Quizzes</button>
             </div>
             <div id="reviewer-form" style={{ display: 'none' }}>
               <form onSubmit={handleReviewerLinkSubmit} className="reviewer-form">
@@ -116,11 +120,12 @@ const LoadReviewer = ({ handleLogout, isLoggedIn }) => {
                 <button className="button-stylehp" type="submit">Generate Quiz</button>
               </form>
             </div>
-          </div>
+            </div>
         </>
       )}
     </div>
   );
 };
+
 
 export default LoadReviewer;

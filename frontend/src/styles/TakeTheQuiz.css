@@ -23,16 +23,16 @@ body {
 }
 
 .quiz-window {
-  text-align: center;
+  text-align: left;
   font-size: clamp(20px, 2.5vw, 24px);
   margin-top: 10vh;
+  padding: 20px;
 }
 
 .options {
-  display: flex;
-  flex-direction: column;
-  width: 70%;
-  margin: 2em auto;
+  display: block;
+  margin-bottom: 5px;
+  text-align: left;
 }
 
 .option {
@@ -55,9 +55,14 @@ body {
   background-color: #006400; /* Using the same hover color as HomePage.css */
 }
 
+.question-number {
+  color: green;
+  margin-bottom: 10px;
+}
+
 .question {
-  width: 70%;
-  margin: 0 auto;
+  text-align: left;
+  margin-bottom: 5px;
 }
 
 .game-over {
@@ -89,4 +94,13 @@ body {
 
 .game-over button:hover {
   background-color: #006400; /* Using the same hover color as HomePage.css */
+}
+
+.results {
+  text-align: left;
+  margin-top: 5px;
+}
+
+.result-item {
+  margin-bottom: 5px;
 }

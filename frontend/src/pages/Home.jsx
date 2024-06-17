@@ -4,7 +4,6 @@ import logo from '../assets/logo.png';
 import '../styles/HomePage.css';
 import axios from 'axios';
 
-/*const Home= ({ handleLogout, isLoggedIn, setIsLoggedIn }) => {*/
 const Home = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -20,13 +19,18 @@ const Home = () => {
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
+    const loginPayload = {
+      email: loginEmail,
+      password: loginPassword,
+    };
+
+    console.log('Login Payload:', loginPayload);
+    
     try {
-      const response = await axios.get('http://localhost:5001/api/users', {
-        email: loginEmail,
-        password: loginPassword,
-      });
+      const response = await axios.post('http://localhost:5001/api/users/login', loginPayload);
       const userData = response.data;
-      console.log(userData);
+      console.log('User Data:', userData);
+      
       if (userData) {
         localStorage.setItem('loggedInUser', JSON.stringify(userData));
         setIsLoggedIn(true);
@@ -105,7 +109,6 @@ const Home = () => {
       </div>
       {errorMessage && <p>{errorMessage}</p>}
       <div className="learn-more">
-        <button className="button-stylehp" onClick={() => navigate('/quiz-list')}>View Quizzes</button>
         <button className="button-stylehp" onClick={handleLearnMoreClick}>Learn More</button>
       </div>
     </div>
