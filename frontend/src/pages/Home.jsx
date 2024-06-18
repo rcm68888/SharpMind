@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import '../styles/HomePage.css';
@@ -17,14 +17,19 @@ const Home = () => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (user) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     const loginPayload = {
       email: loginEmail,
       password: loginPassword,
     };
-
-    console.log('Login Payload:', loginPayload);
     
     try {
       const response = await axios.post('http://localhost:5001/api/users/login', loginPayload);
@@ -44,6 +49,12 @@ const Home = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('loggedInUser');
+    setIsLoggedIn(false);
+    navigate('/');
+  };
+
   const handleLoginClick = () => {
     setShowLogin(true);
   };
@@ -55,19 +66,20 @@ const Home = () => {
   return (
     <div className="home-page">
       <div className="header">
-        {isLoggedIn && (
-          <button className="button-stylehp" onClick={handleLogout}>Logout</button>
-        )}
         <img src={logo} alt="Logo" className="logo" />
         <h2>Welcome to SharpMind</h2>
       </div>
       
       <div className="buttons">
         <button className="button-stylehp" onClick={() => navigate('/signup')}>Sign Up</button>
-        {!showLogin && <button className="button-stylehp" onClick={handleLoginClick}>Login</button>}
+        {isLoggedIn ? (
+          <button className="button-stylehp" onClick={handleLogout}>Logout</button>
+        ) : (
+          <button className="button-stylehp" onClick={handleLoginClick}>Login</button>
+        )}
       </div>
 
-      {showLogin && (
+      {showLogin && !isLoggedIn && (
         <div>
           <h2>Login</h2>
           <form onSubmit={handleLoginSubmit}>
@@ -100,10 +112,7 @@ const Home = () => {
             Say goodbye to the traditional methods of self-testing that are not only time-consuming but often require the creation of custom quizzes or flashcards.
           </p>
           <p>
-            SharpMind aims to solve this problem by automating the quiz creation process, allowing users to focus on learning and understanding rather than on the mechanics of creating study aids.
-          </p>
-          <p>
-            SharpMind aims to provide a seamless and efficient learning experience, enabling users to deepen their understanding of study materials through interactive and automatically generated quizzes.
+            SharpMind aims to solve this problem by automating the quiz creation process, allowing users to focus on learning and understanding rather than on the mechanics of creating study aids.  As a results, it provides a seamless and efficient learning experience, enabling users to deepen their understanding of study materials through interactive and automatically generated quizzes.
           </p>
         </div>
       </div>
