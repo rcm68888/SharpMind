@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../assets/logo.png';
+import '../styles/LoadReviewer.css';
 import isURL from 'validator/lib/isURL';
 import {
   extractTextFromYoutube,
@@ -84,7 +85,9 @@ const LoadReviewer = ({ handleLogout, isLoggedIn }) => {
           </div>
           <div>
             <div className="try-for-free-content">
-              <button className="button-stylehp" onClick={handleLogout}>Logout</button>
+              {isLoggedIn && (
+                <button className="button-stylehp" onClick={handleLogout}>Logout</button>
+              )}
               <h3>How to Use SharpMind: A Step-by-Step Guide</h3>
               <p>
                 Using SharpMind is simple and intuitive. Follow these steps to make the most of our platform:
