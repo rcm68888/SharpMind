@@ -1,4 +1,4 @@
-Generate a JSON object for a quiz based on the following text. Make it have 10 questions. The JSON object should have the following structure:
+Generate a JSON object for a quiz based on the following text. Make it have 10 questions ((Don't display: 2 easy, 6 moderate, and 4 hard ones). Limit the title to 255 characters and each options to 50 max characters. The JSON object should have the following structure:
 {
   "user_id": 1,
   "quiz_title": "Generated title based on input text",

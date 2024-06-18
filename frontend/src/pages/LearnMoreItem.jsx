@@ -23,7 +23,7 @@ const LearnMoreItem = ({ handleLogout, isLoggedIn }) => {
         <div className="description">
           <h3>Easily Generate Quizzes from Various File Types with SharpMind</h3>
           <p>
-            With SharpMind, users can effortlessly upload different file types, such as text documents, PDFs, videos, powerpoint and slides presentations and the app will automatically generate quiz-style questionnaires based on the content of these files. This innovative feature saves time and eliminates the need for manual quiz creation, allowing users to focus on learning and comprehension.
+            With SharpMind, users can effortlessly cut and paste the text from their reviewer documents, PDFs, powerpoint and slides presentations and the app will automatically generate quiz-style questionnaires based on the content of these files. This innovative feature saves time and eliminates the need for manual quiz creation, allowing users to focus on learning and comprehension.
           </p>
         </div>
         <div className="learn-more-item">

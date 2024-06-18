@@ -16,10 +16,20 @@ import { generateToken, verifyToken } from './auth.js';
 import { createRequire } from 'module';
 
 dotenv.config();
-console.log('JWT_SECRET:', process.env.JWT_SECRET);
 const app = express();
-const { Pool } = new pg.Pool();
+const { Pool } = pg;
 const PORT = 5001;
+
+// Database connection
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+});
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Middleware
 app.use(cors());
@@ -32,34 +42,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 let publicQuizzes = [];
-
-// Database connection
-const pool = new pg.Pool({
-  user: 'labber',
-  host: 'localhost',
-  database: 'sharpmind',
-  password: 'labber',
-  port: 5432,
-});
-
-const JWT_SECRET = process.env.JWT_SECRET || 'SharpMind_jwt_secret123';
-
-// Function to save data to a file
-const saveToFile = (dir, fileName, data, res) => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
-  }
-
-  const filePath = path.join(dir, fileName);
-  fs.writeFile(filePath, data, (err) => {
-    if (err) {
-      console.error(`Error saving to ${filePath}:`, err);
-      res.status(500).send(`Error saving ${fileName}`);
-    } else {
-      res.status(200).send(`${fileName} saved successfully`);
-    }
-  });
-};
 
 // Routes
 app.get('/', async (req, res) => {
@@ -101,7 +83,7 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
-app.post('/api/login', async (req, res) => {
+app.post('/api/users/login', async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -122,17 +104,14 @@ app.post('/api/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    // Generate JWT token
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
 
-    // Set the token as a cookie with HttpOnly and Secure flags
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Set to true in production
-      sameSite: 'strict', // Set the sameSite attribute
+      secure: process.env.NODE_ENV === 'development',
+      sameSite: 'strict',
     });
 
-    // Return user information without sensitive data
     res.json({ id: user.id, email: user.email, name: user.name });
   } catch (error) {
     console.error(error);
@@ -153,10 +132,18 @@ app.put('/api/users/:userId', async (req, res) => {
   }
 
   try {
-    const updateResult = await pool.query(
-      'UPDATE users SET name = $1, email = $2, password = $3 WHERE id = $4 RETURNING *',
-      [name, email, password, userId]
-    );
+    const hashedPassword = password ? await bcrypt.hash(password, 10) : undefined;
+    const updateFields = [name, email, hashedPassword].filter(Boolean);
+
+    const updateQuery = `
+      UPDATE users 
+      SET 
+        name = COALESCE($1, name), 
+        email = COALESCE($2, email), 
+        password = COALESCE($3, password) 
+      WHERE id = $4 RETURNING *`;
+
+    const updateResult = await pool.query(updateQuery, [...updateFields, userId]);
 
     if (updateResult.rows.length === 0) {
       return res.status(404).send('User not found');
@@ -173,21 +160,20 @@ app.put('/api/users/:userId', async (req, res) => {
 
 //CREATE for QUIZZES
 app.post('/api/quizzes', async (req, res) => {
-  const { title, questions } = req.body;
+  const { title, questions, userId } = req.body;
 
   try {
     const quizResult = await pool.query(
-      'INSERT INTO quiz (quiz_title) VALUES ($1) RETURNING id',
-      [title]
+      'INSERT INTO quiz (quiz_title, user_id) VALUES ($1, $2) RETURNING id',
+      [title, userId]
     );
     const quizId = quizResult.rows[0].id;
 
     for (const question of questions) {
-      const questionResult = await pool.query(
-        'INSERT INTO question (quiz_id, question_text, options, correct_option) VALUES ($1, $2, $3, $4) RETURNING id',
+      await pool.query(
+        'INSERT INTO question (quiz_id, question_text, options, correct_option) VALUES ($1, $2, $3, $4)',
         [quizId, question.questionText, JSON.stringify(question.options), question.correctOption]
       );
-      console.log(`Inserted question with ID: ${questionResult.rows[0].id}`);
     }
 
     res.json({ message: 'Quiz created successfully!' });
@@ -211,6 +197,11 @@ app.get('/api/quizzes', async (req, res) => {
 //READ for QUIZZES SPECIFIC (quiz creation history)
 app.get('/api/users/:userId/quizzes', async (req, res) => {
   const userId = parseInt(req.params.userId);
+
+  if (isNaN(userId)) {
+    return res.status(400).send('Invalid user ID');
+  }
+
   try {
       const result = await pool.query('SELECT * FROM quiz WHERE user_id = $1', [userId]);
       res.json(result.rows);
@@ -219,9 +210,6 @@ app.get('/api/users/:userId/quizzes', async (req, res) => {
       res.status(500).send('Server error');
   }
 });
-
-
-
 
 //UPDATE for QUIZZES
 app.put('/api/quizzes/:quizId', async (req, res) => {
@@ -246,7 +234,7 @@ app.put('/api/quizzes/:quizId', async (req, res) => {
 
     for (const question of questions) {
       await pool.query(
-        'INSERT INTO question (quiz_id, question_text, options, correct_option) VALUES ($1, $2, $3, $4) RETURNING id',
+        'INSERT INTO question (quiz_id, question_text, options, correct_option) VALUES ($1, $2, $3, $4)',
         [quizId, question.questionText, JSON.stringify(question.options), question.correctOption]
       );
     }
@@ -477,7 +465,6 @@ app.get('/api/public-quiz', async (req, res) => {
 
 app.get('/api/quiz-list-user/:userId', async (req, res) => {
   const userId = parseInt(req.params.userId, 10);
-  console.log(`Received user ID: ${userId}`);
  
   if (isNaN(userId)) {
     return res.status(400).send('Invalid user ID');
@@ -494,7 +481,7 @@ app.get('/api/quiz-list-user/:userId', async (req, res) => {
 
 app.get('/api/take-the-quiz/:quizId', async (req, res) => {
   const quizId = parseInt(req.params.quizId, 10);
-  console.log(`Received quiz ID: ${quizId}`);
+
   if (isNaN(quizId)) {
     return res.status(400).send('Invalid quiz ID');
   }
@@ -577,8 +564,8 @@ app.get('/api/quiz/:id', (req, res) => {
 });
 
 app.get('/api/users/:userId', async (req, res) => {
-  const userId = parseInt(req.params.userId);
-  if (!userId) {
+  const userId = parseInt(req.params.userId, 10);
+  if (isNaN(userId)) {
     return res.status(400).send('Invalid user ID');
   }
   try {
@@ -593,10 +580,6 @@ app.get('/api/users/:userId', async (req, res) => {
       res.status(500).send('Server error');
   }
 });
-
-
-
-
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

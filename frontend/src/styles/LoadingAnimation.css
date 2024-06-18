@@ -12,13 +12,12 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  text-align: center;
 }
 
-.text {
-  color: #4fcf46;
-  display: inline-block;
-  margin-RIGHT: 25px;
-  font-size: 24px;
+.loading {
+  display: flex;
+  align-items: center;
 }
 
 .bounceball {
@@ -26,6 +25,7 @@ body {
   display: inline-block;
   height: 37px;
   width: 15px;
+  margin-right: 25px;
 }
 
 .bounceball:before {
@@ -39,6 +39,13 @@ body {
   background-color: #4fcf46;
   transform-origin: 50%;
   animation: bounce 500ms alternate infinite ease;
+}
+
+.text {
+  color: #4fcf46;
+  display: inline-block;
+  font-size: 24px;
+  animation: fadeInOut 3s ease-in-out infinite;
 }
 
 @keyframes bounce {
@@ -56,4 +63,9 @@ body {
   100% {
     top: 0;
   }
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
 }
