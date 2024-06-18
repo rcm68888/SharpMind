@@ -5,10 +5,11 @@ import SignUp from './pages/SignUp';
 import QuizList from './pages/QuizList';
 import QuizListUser from './pages/QuizListUser';
 import TakeTheQuiz from './pages/TakeTheQuiz';
-import Dashboard from './pages/Dashboard';
 import LearnMoreItem from './pages/LearnMoreItem';
 import LoadReviewer from './pages/LoadReviewer';
+import LoadingAnimation from './pages/LoadingAnimation';
 import './styles/App.css';
+
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -26,6 +27,7 @@ const App = () => {
       <Route path="/quiz-list" element={<QuizList />} />
       <Route path="/quiz-list-user/:id" element={<QuizListUser />} />
       <Route path="/take-the-quiz/:quizId" element={<TakeTheQuiz />} />
+      <Route path="/loading-animation" element={<LoadingAnimation />} />
     </Routes>
   );
 };
