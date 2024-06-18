@@ -33,13 +33,13 @@ Other Technologies
 
 # Screen Shots
 
-![1. HomePage](../frontend/src/assets/HomePage.png)
-![2. More details about SharpMind](../frontend/src/assets/LearnMore.png)
-![3. Load your details](../frontend/src/assets/GenerateQuiz.png)
-![4. Select Quiz](../frontend/src/assets/SelectQuiz.png)
-![5. Take the Quiz](../frontend/src/assets/SampleQuiz.png)
-![6. Get Results](../frontend/src/assets/GetResults.png)
-![7. How You fared in the Test](../frontend/src/assets/ViewResults.png)
+![1. HomePage](/frontend/src/assets/HomePage.png)
+![2. More details about SharpMind](/frontend/src/assets/LearnMore.png)
+![3. Load your details](/frontend/src/assets/GenerateQuiz.png)
+![4. Select Quiz](/frontend/src/assets/SelectQuiz.png)
+![5. Take the Quiz](/frontend/src/assets/SampleQuiz.png)
+![6. Get Results](/frontend/src/assets/GetResults.png)
+![7. How You fared in the Test](/frontend/src/assets/ViewResults.png)
 
 SharpMind AI aims to revolutionize the way people learn by providing an intuitive and efficient platform for generating and taking quizzes. Our future plans include adding more customization options for quizzes and enhancing the analysis of quiz results
 
