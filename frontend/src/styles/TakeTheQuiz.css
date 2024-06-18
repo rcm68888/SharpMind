@@ -66,18 +66,18 @@ body {
 }
 
 .game-over {
-  margin-top: 4em;
+  margin-top: 1em;
   text-align: center;
 }
 
 .game-over h1 {
-  font-size: 2.5em;
+  font-size: 1em;
   color: #006400;
 }
 
 .game-over p {
-  font-size: 1.5em;
-  margin-bottom: 3em;
+  font-size: 1em;
+  margin-bottom: 1em;
   color: #333;
 }
 
@@ -98,9 +98,9 @@ body {
 
 .results {
   text-align: left;
-  margin-top: 5px;
+  margin-top: 1px;
 }
 
 .result-item {
-  margin-bottom: 5px;
+  margin-bottom: 1px;
 }

@@ -94,7 +94,7 @@ const Home = () => {
       <div className="content-container">
         <div className="description">
           <p>
-            SharpMind is an innovative educational application designed to enhance learning and comprehension through interactive quizzes generated from user-uploaded documents. Users can upload various file types—text documents, PDFs, video, PowerPoint and slides presentations.
+            SharpMind is an innovative educational application designed to enhance learning and comprehension through interactive quizzes generated from user-uploaded text from documents, PDFs, PowerPoint and slides, or video presentations.
           </p>
           <p>
             Say goodbye to the traditional methods of self-testing that are not only time-consuming but often require the creation of custom quizzes or flashcards.
