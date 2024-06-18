@@ -4,9 +4,9 @@ import '../styles/LoadingAnimation.css';
 const LoadingAnimation = () => {
   const [loadingText, setLoadingText] = useState('Loading your text');
   const loadingMessages = [
-    'Loading your text',
-    'Asking AI to generate quiz',
-    'Asking AI to generate quiz POLITELY',
+    'Loading your study material',
+    'Telling AI to generate quiz',
+    'POLITELY ASKING AI to generate quiz',
     'Receiving quiz',
     'Generating quiz',
     'Almost there'
