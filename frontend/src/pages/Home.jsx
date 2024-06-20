@@ -67,7 +67,8 @@ const Home = () => {
     <div className="home-page">
       <div className="header">
         <img src={logo} alt="Logo" className="logo" />
-        <h2>Welcome to SharpMind</h2>
+        <h1>SharpMind</h1>
+        <h2>Revolutionizing the Way You Learn</h2>
       </div>
       
       <div className="buttons">
