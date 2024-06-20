@@ -1,9 +1,11 @@
+/* General styles */
 body {
   font-family: Arial, sans-serif;
   background-color: #f0f8f5;
   color: #333;
 }
 
+/* Header styles */
 .ttq-header {
   display: flex;
   flex-direction: column;
@@ -22,6 +24,7 @@ body {
   color: #006400;
 }
 
+/* Quiz window styles */
 .quiz-window {
   text-align: left;
   font-size: clamp(20px, 2.5vw, 24px);
@@ -42,7 +45,7 @@ body {
   padding: 10px 15px;
   text-decoration: none;
   color: #fff;
-  background-color: #228b22; 
+  background-color: #228b22;
   transition: background-color 0.3s;
   font-size: 1em;
   outline: none;
@@ -52,7 +55,7 @@ body {
 }
 
 .option:hover {
-  background-color: #006400; /* Using the same hover color as HomePage.css */
+  background-color: #006400;
 }
 
 .question-number {
@@ -65,6 +68,7 @@ body {
   margin-bottom: 5px;
 }
 
+/* Game over styles */
 .game-over {
   margin-top: 1em;
   text-align: center;
@@ -86,14 +90,14 @@ body {
   border-radius: 25px;
   padding: 10px 20px;
   color: #fff;
-  background-color: #228b22; 
+  background-color: #228b22;
   transition: background-color 0.3s;
   cursor: pointer;
-  margin: 0 10px; /* Space between buttons */
+  margin: 0 10px;
 }
 
 .game-over button:hover {
-  background-color: #006400; /* Using the same hover color as HomePage.css */
+  background-color: #006400;
 }
 
 .results {
@@ -103,4 +107,15 @@ body {
 
 .result-item {
   margin-bottom: 1px;
+}
+
+/* Correct and Incorrect Answer Styles */
+.results .correct {
+  color: green;
+  font-weight: bold;
+}
+
+.results .incorrect {
+  color: red;
+  font-weight: bold;
 }

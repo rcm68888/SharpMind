@@ -581,6 +581,47 @@ app.get('/api/users/:userId', async (req, res) => {
   }
 });
 
+const openai = new openAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+app.post('/api/generate-explanations', async (req, res) => {
+  const { answers } = req.body;
+  try {
+    const explanations = await Promise.all(answers.map(async (answer) => {
+      const explanation = await generateExplanation(answer.question, answer.correctAnswer, answer.userAnswer);
+      return explanation;
+    }));
+
+    res.json({ explanations });
+  } catch (error) {
+    console.error('Error generating explanations:', error);
+    res.status(500).json({ error: 'Failed to generate explanations' });
+  }
+});
+
+const generateExplanation = async (question, correctAnswer, userAnswer) => {
+  const messages = [
+    {
+      role: "system",
+      content: "You are a helpful assistant designed to output JSON. For your reply on the content, please try to keep the explanation concise at most 200 characters",
+    },
+    {
+      role: "user",
+      content: `Question: ${question}\nCorrect Answer: ${correctAnswer}\nYour Answer: ${userAnswer}\nExplain why the user's answer is wrong and why the correct answer is. You will not refer to the user as 'user', simply you or you're. Don't be robotic and have a helpful tone. Try to explain why their answer might look correct but is not. Try to explain what their answer is and what the correct one is and the difference between them`,
+    }
+  ];
+
+  const response = await openai.chat.completions.create({
+    model: 'gpt-3.5-turbo',
+    messages: messages,
+    max_tokens: 200,
+    temperature: 0.7,
+  });
+
+  return response.choices[0].message.content.trim();
+};
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
